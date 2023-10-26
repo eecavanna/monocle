@@ -14,10 +14,11 @@ Monocle has the following limitations:
 ## Technologies
 
 Monocle is built upon the following technologies:
-- Node.js v20
-- [Vite](https://vitejs.dev/)
-- [React](https://react.dev/)
-- TypeScript
+- Node 20
+- [Vite](https://vitejs.dev/) 4
+- [React](https://react.dev/) 18
+- TypeScript 5
+- Codemirror 6 (via [`@uiw/react-codemirror`](https://uiwjs.github.io/react-codemirror/))
 
 This code base was bootstrapped by running:
 ```shell
@@ -38,3 +39,7 @@ npx --yes create-vite monacle --template react-ts
    npm run dev
    ```
 3. Visit: http://localhost:5173
+
+## Roadmap
+
+1. Apply syntax highlighting to `Makefile` content ([non-React example](https://github.com/V-Lor/codemirror-mode-makefile/blob/master/example/index.html))
