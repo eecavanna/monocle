@@ -6,6 +6,8 @@ test('generates diagram code from Makefile', () => {
     const makefileContent = [
         "a: b c \\", // dependencies span multiple lines
         "d",
+        "ls -al \\", // recipe spans multiple lines
+        "  run arg1 arg2",
         "// comment", // comment
         "b: c",
     ].join("\n");
