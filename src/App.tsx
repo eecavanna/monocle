@@ -2,14 +2,19 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import CodeMirror from '@uiw/react-codemirror';
+import {Mermaid} from 'mdx-mermaid/lib/Mermaid'
 
 function App() {
   const [count, setCount] = useState(0)
+  const [chart, setChart] = useState<string>("flowchart LR\na --> b")
 
   return (
     <>
       <div style={{marginTop: 8, marginBottom: 24}}>
         <CodeMirror theme={"dark"}/>
+      </div>
+      <div style={{marginTop: 8, marginBottom: 24, border: "1px solid salmon"}}>
+        <Mermaid chart={chart} />
       </div>
       <div>
         <a href="https://vitejs.dev" target="_blank">

@@ -19,6 +19,7 @@ Monocle is built upon the following technologies:
 - [React](https://react.dev/) 18
 - TypeScript 5
 - Codemirror 6 (via [`@uiw/react-codemirror`](https://uiwjs.github.io/react-codemirror/))
+- Mermaid (via [`mdx-mermaid`](https://sjwall.github.io/mdx-mermaid/))
 
 This code base was bootstrapped by running:
 ```shell
