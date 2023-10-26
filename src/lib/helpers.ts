@@ -1,17 +1,17 @@
 import parseMakefile from "@kba/makefile-parser";
 
 /**
- * Parses the Makefile content and produces code for a corresponding Mermaid chart.
+ * Parses the Makefile content and produces code for a corresponding Mermaid diagram.
  *
  * @param makefileContent {string} Makefile content
- * @return chart {string} Mermaid code
+ * @return diagramCode {string} Mermaid diagram code
  */
-export const generateChartFromMakefile = (makefileContent: string): string => {
+export const generateMermaidDiagramFromMakefile = (makefileContent: string): string => {
     // Parse the Makefile content into a list of nodes.
     const {ast: nodes} = parseMakefile(makefileContent);
 
-    // Initialize an array of lines of code that, together, describe a Mermaid chart.
-    const chartLines: Array<string> = ["graph LR"]; // "graph" is and alias for "flowchart"
+    // Initialize an array of lines of code that, when joined by newlines, describe a Mermaid diagram.
+    const diagramCodeLines: Array<string> = ["graph LR"]; // "graph" is an alias for "flowchart"
 
     // Get the nodes that represent Make targets.
     nodes
@@ -22,12 +22,12 @@ export const generateChartFromMakefile = (makefileContent: string): string => {
         // Generate Mermaid code describing the remaining nodes.
         .forEach((node) => {
             const {target, deps} = node;
-            chartLines.push(`  ${target}`);
+            diagramCodeLines.push(`  ${target}`);
             deps?.forEach(dep => {
-                chartLines.push(`    ${target} --> ${dep}`);
+                diagramCodeLines.push(`    ${target} --> ${dep}`);
             });
         });
 
-    const chart = chartLines.join("\n");
-    return chart;
+    const diagramCode = diagramCodeLines.join("\n");
+    return diagramCode;
 }

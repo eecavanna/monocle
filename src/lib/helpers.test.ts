@@ -1,8 +1,8 @@
 import {expect, test} from 'vitest'
-import {generateChartFromMakefile} from "./helpers.ts"
+import {generateMermaidDiagramFromMakefile} from "./helpers.ts"
 
 // TODO: Supplement this with multiple, more granular tests (it tests multiple things right now).
-test('generates chart from Makefile', () => {
+test('generates diagram code from Makefile', () => {
     const makefileContent = [
         "a: b c \\", // dependencies span multiple lines
         "d",
@@ -10,7 +10,7 @@ test('generates chart from Makefile', () => {
         "b: c",
     ].join("\n");
 
-    const chartCode = [
+    const diagramCode = [
         "graph LR",
         "  a", // target
         "    a --> b",
@@ -20,5 +20,5 @@ test('generates chart from Makefile', () => {
         "    b --> c",
     ].join("\n");
 
-    expect(generateChartFromMakefile(makefileContent)).toBe(chartCode);
+    expect(generateMermaidDiagramFromMakefile(makefileContent)).toBe(diagramCode);
 });
