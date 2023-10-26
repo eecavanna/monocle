@@ -11,7 +11,7 @@ import Form from "react-bootstrap/Form";
 function App() {
   // This keeps track of the current contents of the editor, which is a "controlled" component.
   const [editorValue, setEditorValue] = useState<string>(
-    "target: dep1 dep2\ndep1: dep3\n",
+    "# Paste your Makefile here\n\ntarget: dep1 dep2\ndep1: dep3\n",
   );
 
   // This keeps track of the last-submitted editor value; i.e. the Makefile content used to make the diagram.
@@ -94,6 +94,8 @@ function App() {
             theme={theme}
             value={editorValue}
             onChange={onEditorChange}
+            height={"200px"}
+            placeholder={"Paste your Makefile here..."}
           />
         </div>
         <div className={"my-2"}>
