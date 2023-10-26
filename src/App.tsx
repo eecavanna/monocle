@@ -34,10 +34,13 @@ function App() {
         setDiagramCode(mermaidCode);
     };
 
+    // Note: Both "light" and "dark" happen to be valid theme identifiers for Codemirror and Mermaid.
+    const theme: "light" | "dark" = "dark";
+
     return (
         <>
             <div>
-                <CodeMirror theme={"dark"} value={editorValue} onChange={onEditorChange}/>
+                <CodeMirror theme={theme} value={editorValue} onChange={onEditorChange}/>
             </div>
             <div className={"my-2"}>
                 <Button
@@ -49,7 +52,7 @@ function App() {
                 </Button>
             </div>
             <div style={{filter: isLastSubmittedEditorValueStale ? "blur(4px)" : undefined}}>
-                <Mermaid chart={diagramCode} config={{theme: "dark"}}/>
+                <Mermaid chart={diagramCode} config={{mermaid: {theme}}}/>
             </div>
         </>
     )
