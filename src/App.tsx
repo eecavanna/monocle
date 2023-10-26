@@ -40,8 +40,14 @@ function App() {
     // Note: Both "light" and "dark" happen to be valid theme identifiers for Bootstrap, Codemirror, and Mermaid.
     const [isDark, setIsDark] = useState<boolean>(false);
     const theme = isDark ? "dark" : "light";
-    const toggleTheme = () => {
-        setIsDark((currentIsDark) => !currentIsDark);
+    const toggleTheme = (event) => {
+        const isChecked = event.target.checked;
+        setIsDark(isChecked);
+
+        // Update (creating if necessary) the "data-bs-theme" attribute of the `<html>` element, itself.
+        // Reference: https://getbootstrap.com/docs/5.3/customize/color-modes/#javascript
+        // TODO: Make this more robust (e.g. consider user's system settings, save to browser storage, etc.).
+        document.documentElement.setAttribute('data-bs-theme', isChecked ? 'dark' : "light");
     };
 
     return (
