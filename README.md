@@ -18,6 +18,7 @@ Monocle is built upon the following technologies:
 - [Vite](https://vitejs.dev/) 4
 - [React](https://react.dev/) 18
 - TypeScript 5
+- Bootstrap 5 (via [`react-bootstrap`](https://react-bootstrap.netlify.app/))
 - Codemirror 6 (via [`@uiw/react-codemirror`](https://uiwjs.github.io/react-codemirror/))
 - Mermaid (via [`mdx-mermaid`](https://sjwall.github.io/mdx-mermaid/))
 - [Vitest](https://vitest.dev/)
@@ -52,3 +53,8 @@ npm test
 ## Roadmap
 
 1. Apply syntax highlighting to `Makefile` content ([non-React example](https://github.com/V-Lor/codemirror-mode-makefile/blob/master/example/index.html))
+
+## FAQ
+
+- Q: Why'd you name it "monocle?"
+- A: Because the word "monocle" has "m", "k", and "l" sounds like the word "Makefile" does, and a monocle is a thing people use to see stuff more clearly.
