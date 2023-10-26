@@ -87,7 +87,7 @@ function App() {
         </Container>
       </Navbar>
       <Container>
-        <h2>Makefile</h2>
+        <h2 className={"mt-2"}>Makefile</h2>
         <div>
           <CodeMirror
             autoFocus
@@ -98,7 +98,7 @@ function App() {
             placeholder={"Paste your Makefile here..."}
           />
         </div>
-        <div className={"my-2"}>
+        <div className={"mt-3 mb-5"}>
           <Button
             onClick={onClickUpdateDiagram}
             disabled={!isLastSubmittedEditorValueStale}
