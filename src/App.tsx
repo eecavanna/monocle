@@ -4,6 +4,9 @@ import {Mermaid} from 'mdx-mermaid/lib/Mermaid'
 import {generateMermaidDiagramFromMakefile} from "./lib/helpers.ts";
 import Button from 'react-bootstrap/Button';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Container from "react-bootstrap/Container";
+import Navbar from "react-bootstrap/Navbar";
+import Form from "react-bootstrap/Form"
 
 function App() {
     // This keeps track of the current contents of the editor, which is a "controlled" component.
@@ -34,26 +37,67 @@ function App() {
         setDiagramCode(mermaidCode);
     };
 
-    // Note: Both "light" and "dark" happen to be valid theme identifiers for Codemirror and Mermaid.
-    const theme: "light" | "dark" = "dark";
+    // Note: Both "light" and "dark" happen to be valid theme identifiers for Bootstrap, Codemirror, and Mermaid.
+    const [isDark, setIsDark] = useState<boolean>(false);
+    const theme = isDark ? "dark" : "light";
+    const toggleTheme = () => {
+        setIsDark((currentIsDark) => !currentIsDark);
+    };
 
     return (
         <>
-            <div>
-                <CodeMirror theme={theme} value={editorValue} onChange={onEditorChange}/>
-            </div>
-            <div className={"my-2"}>
-                <Button
-                    onClick={onClickUpdateDiagram}
-                    disabled={!isLastSubmittedEditorValueStale}
-                    className={isLastSubmittedEditorValueStale ? "shadow-sm" : "shadow-none"}
-                >
-                    Update diagram
-                </Button>
-            </div>
-            <div style={{filter: isLastSubmittedEditorValueStale ? "blur(4px)" : undefined}}>
-                <Mermaid chart={diagramCode} config={{mermaid: {theme}}}/>
-            </div>
+            <Navbar className="bg-body-tertiary" data-bs-theme={theme}>
+                <Container>
+                    <Navbar.Brand>
+                        <img
+                            alt={"Monocle logo"}
+                            src={"/logo-512x512.png"}
+                            width={"30"}
+                            height={"30"}
+                            className={"d-inline-block align-top me-1"}
+                        />
+                        Monocle
+                    </Navbar.Brand>
+                    <Navbar.Text className={"justify-content-end"}>
+                        <Form>
+                            <Form.Check
+                                type={"switch"}
+                                id={"theme-switch"}
+                                label={"Night mode"}
+                                onChange={toggleTheme}
+                                checked={isDark}
+                            />
+                        </Form>
+                    </Navbar.Text>
+                </Container>
+            </Navbar>
+            <Container>
+                <h2>Makefile</h2>
+                <div>
+                    <CodeMirror
+                        autoFocus
+                        theme={theme}
+                        value={editorValue}
+                        onChange={onEditorChange}
+                    />
+                </div>
+                <div className={"my-2"}>
+                    <Button
+                        onClick={onClickUpdateDiagram}
+                        disabled={!isLastSubmittedEditorValueStale}
+                        className={isLastSubmittedEditorValueStale ? "shadow-sm" : "shadow-none"}
+                    >
+                        Update diagram
+                    </Button>
+                </div>
+                <h2>Diagram</h2>
+                <div style={{filter: isLastSubmittedEditorValueStale ? "blur(4px)" : undefined}}>
+                    <Mermaid
+                        chart={diagramCode}
+                        config={{mermaid: {theme}}}
+                    />
+                </div>
+            </Container>
         </>
     )
 }
