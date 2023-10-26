@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
-import CodeMirror from '@uiw/react-codemirror';
+import CodeMirror from '@uiw/react-codemirror'
 import {Mermaid} from 'mdx-mermaid/lib/Mermaid'
+import {generateChartFromMakefile} from "./lib/helpers.ts";
 
 function App() {
   const [count, setCount] = useState(0)
@@ -14,7 +15,7 @@ function App() {
         <CodeMirror theme={"dark"}/>
       </div>
       <div style={{marginTop: 8, marginBottom: 24, border: "1px solid salmon"}}>
-        <Mermaid chart={chart} />
+        <Mermaid chart={generateChartFromMakefile("target: dep1 dep2\ndep1: dep2\n")} />
       </div>
       <div>
         <a href="https://vitejs.dev" target="_blank">

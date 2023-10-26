@@ -9,11 +9,11 @@
 declare module '@kba/makefile-parser' {
     type Options = { strict: boolean; unhandled: boolean; };
     type Context = {
-        PHONY: [], // TODO: Add information
-        ast: [], // TODO: Add information
+        PHONY: []; // TODO: Add information
+        ast: Array<{ target?: string; deps?: Array<string>; }>;
         unhandled: Array<string>;
     };
 
-    const parseMakefile: (makefileContent: string, options: Options) => Context;
+    const parseMakefile: (makefileContent: string, options?: Options) => Context;
     export default parseMakefile;
 }

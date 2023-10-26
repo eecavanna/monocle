@@ -20,6 +20,7 @@ Monocle is built upon the following technologies:
 - TypeScript 5
 - Codemirror 6 (via [`@uiw/react-codemirror`](https://uiwjs.github.io/react-codemirror/))
 - Mermaid (via [`mdx-mermaid`](https://sjwall.github.io/mdx-mermaid/))
+- [Vitest](https://vitest.dev/)
 
 This code base was bootstrapped by running:
 ```shell
@@ -40,6 +41,13 @@ npx --yes create-vite monacle --template react-ts
    npm run dev
    ```
 3. Visit: http://localhost:5173
+
+### Testing
+
+```shell
+npm test
+```
+> Tests are written using [Vitest](https://vitest.dev/).
 
 ## Roadmap
 
