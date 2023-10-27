@@ -2,16 +2,16 @@ import { useEffect, useState } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import Button from "react-bootstrap/Button";
 import "bootstrap/dist/css/bootstrap.min.css";
-import {Theme} from "../constants.ts";
+import { Theme } from "../constants.ts";
 
 interface Props {
-  theme?: Theme
+  theme?: Theme;
   initialValue?: string;
   onSubmit: (value: string) => void;
   onChangeStaleness: (isStale: boolean) => void;
 }
 
-const MakefileEditor = ({
+const Makefile = ({
   initialValue = "",
   theme = Theme.Light,
   onSubmit,
@@ -26,7 +26,8 @@ const MakefileEditor = ({
     useState<string>(initialValue);
 
   // Keep track of whether the current editor value differs from the most recently-submitted editor value.
-  const [isSubmittedValStale, setIsSubmittedValStale] = useState<boolean>(false);
+  const [isSubmittedValStale, setIsSubmittedValStale] =
+    useState<boolean>(false);
 
   // Whenever the editor's content changes, potentially update the component's local staleness flag and invoke the related callback.
   useEffect(() => {
@@ -84,4 +85,4 @@ const MakefileEditor = ({
   );
 };
 
-export default MakefileEditor;
+export default Makefile;

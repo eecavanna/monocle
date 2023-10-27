@@ -1,15 +1,14 @@
 import { useState } from "react";
-import { Mermaid } from "mdx-mermaid/lib/Mermaid";
 import { generateMermaidDiagramFromMakefile } from "./lib/helpers.ts";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
 import Form from "react-bootstrap/Form";
-import MakefileEditor from "./components/MakefileEditor.tsx";
+import Makefile from "./components/Makefile.tsx";
+import Diagram from "./components/Diagram.tsx";
 import {Theme} from "./constants.ts";
 
 function App() {
-
   const initialEditorValue = "# Paste your Makefile here\n\ntarget: dep1 dep2\ndep1: dep3\n";
 
   // This keeps track of whether the current editor value differs from the last-submitted editor value.
@@ -21,8 +20,8 @@ function App() {
     generateMermaidDiagramFromMakefile(initialEditorValue)
   );
 
-  // This function parses the editor content as a Makefile, generating Mermaid diagram code.
-  const onSubmit = (makefileContent: string) => {
+  // This function parses the Makefile content, generating Mermaid diagram code.
+  const onSubmitMakefile = (makefileContent: string) => {
     const mermaidCode = generateMermaidDiagramFromMakefile(makefileContent);
     setDiagramCode(mermaidCode);
   };
@@ -64,20 +63,18 @@ function App() {
       </Navbar>
       <Container>
         <h2 className={"mt-2"}>Makefile</h2>
-        <MakefileEditor
+        <Makefile
             theme={theme}
             initialValue={initialEditorValue}
             onChangeStaleness={setIsDiagramStale}
-            onSubmit={onSubmit}
+            onSubmit={onSubmitMakefile}
         />
-        <h2>Diagram</h2>
-        <div
-          style={{
-            filter: isDiagramStale ? "blur(4px)" : undefined,
-          }}
-        >
-          <Mermaid chart={diagramCode} config={{ mermaid: { theme } }} />
-        </div>
+        <h2 className={"mt-2"}>Diagram</h2>
+        <Diagram
+            isStale={isDiagramStale}
+            mermaidCode={diagramCode}
+            theme={theme}
+        />
       </Container>
     </>
   );
