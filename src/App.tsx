@@ -10,7 +10,8 @@ import {Theme} from "./constants.ts";
 import {getInitialTheme, saveTheme} from "./lib/theme.ts";
 
 function App() {
-  const initialEditorValue = "# Paste your Makefile here\n\ntarget: dep1 dep2\ndep1: dep3\n";
+  const initialEditorValue =
+    "# Paste or drop your Makefile here\n\ntarget: dep1 dep2\ndep1: dep3\n";
 
   // This keeps track of whether the current editor value differs from the last-submitted editor value.
   const [isDiagramStale, setIsDiagramStale] =

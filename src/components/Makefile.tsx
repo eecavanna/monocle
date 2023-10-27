@@ -71,7 +71,7 @@ const Makefile = ({
           value={editorVal}
           onChange={onEditorChange}
           height={"200px"}
-          placeholder={"Paste your Makefile here..."}
+          placeholder={"Paste or drop your Makefile here..."}
           // Note: Drag-and-drop functionality is built into CodeMirror; but drag-and-drop styling is not.
           //
           // References:
