@@ -13,7 +13,9 @@ export const generateMermaidDiagramFromMakefile = (
   const { ast: nodes } = parseMakefile(makefileContent);
 
   // Initialize an array of lines of code that, when joined by newlines, describe a Mermaid diagram.
-  const diagramCodeLines: Array<string> = ["graph LR"]; // "graph" is an alias for "flowchart"
+  const diagramCodeLines: Array<string> = [];
+  diagramCodeLines.push("%% Mermaid diagram"); // "%%" precedes a comment
+  diagramCodeLines.push("graph LR"); // "graph" is an alias for "flowchart"
 
   // Get the nodes that represent Make targets.
   nodes
