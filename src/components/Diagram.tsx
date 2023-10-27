@@ -35,7 +35,11 @@ const Diagram = ({ theme = Theme.Light, isStale, mermaidCode }: Props) => {
     <>
       <div
         ref={diagramWrapperRef}
-        style={{ filter: isStale ? "blur(4px)" : undefined, backgroundColor, padding: 24 }}
+        style={{
+          filter: isStale ? "blur(4px)" : undefined,
+          backgroundColor,
+          padding: 24,
+        }}
       >
         <Mermaid chart={mermaidCode} config={{ mermaid: { theme } }} />
       </div>
