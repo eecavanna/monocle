@@ -9,10 +9,11 @@ test("generates diagram code from Makefile", () => {
     "ls -al \\", // recipe spans multiple lines
     "  run arg1 arg2",
     "// comment", // comment
-    "b: c",
+    "b: c # other comment",
   ].join("\n");
 
   const diagramCode = [
+    "%% Mermaid diagram",
     "graph LR",
     "  a", // target
     "    a --> b",
