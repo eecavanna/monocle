@@ -1,51 +1,34 @@
 import { useState } from "react";
-import CodeMirror from "@uiw/react-codemirror";
 import { Mermaid } from "mdx-mermaid/lib/Mermaid";
 import { generateMermaidDiagramFromMakefile } from "./lib/helpers.ts";
-import Button from "react-bootstrap/Button";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
 import Form from "react-bootstrap/Form";
+import MakefileEditor from "./components/MakefileEditor.tsx";
+import {Theme} from "./constants.ts";
 
 function App() {
-  // This keeps track of the current contents of the editor, which is a "controlled" component.
-  const [editorValue, setEditorValue] = useState<string>(
-    "# Paste your Makefile here\n\ntarget: dep1 dep2\ndep1: dep3\n",
-  );
 
-  // This keeps track of the last-submitted editor value; i.e. the Makefile content used to make the diagram.
-  const [lastSubmittedEditorValue, setLastSubmittedEditorValue] =
-    useState<string>(editorValue);
+  const initialEditorValue = "# Paste your Makefile here\n\ntarget: dep1 dep2\ndep1: dep3\n";
 
   // This keeps track of whether the current editor value differs from the last-submitted editor value.
-  const [isLastSubmittedEditorValueStale, setIsLastSubmittedEditorValueStale] =
+  const [isDiagramStale, setIsDiagramStale] =
     useState<boolean>(false);
 
   // This keeps track of the Mermaid diagram code underlying the rendered diagram.
   const [diagramCode, setDiagramCode] = useState<string>(
-    generateMermaidDiagramFromMakefile(editorValue),
+    generateMermaidDiagramFromMakefile(initialEditorValue)
   );
 
-  // This function updates the editor value and determines whether the last-submitted one is stale.
-  const onEditorChange = (value: string) => {
-    setEditorValue(value);
-    setIsLastSubmittedEditorValueStale(value !== lastSubmittedEditorValue);
-  };
-
-  // This function updates the last-submitted editor value and updates the diagram.
-  const onClickUpdateDiagram = () => {
-    setLastSubmittedEditorValue(editorValue);
-    setIsLastSubmittedEditorValueStale(false);
-
-    // Parse the editor content as a Makefile, generating Mermaid diagram code.
-    const mermaidCode = generateMermaidDiagramFromMakefile(editorValue);
+  // This function parses the editor content as a Makefile, generating Mermaid diagram code.
+  const onSubmit = (makefileContent: string) => {
+    const mermaidCode = generateMermaidDiagramFromMakefile(makefileContent);
     setDiagramCode(mermaidCode);
   };
 
-  // Note: Both "light" and "dark" happen to be valid theme identifiers for Bootstrap, Codemirror, and Mermaid.
   const [isDark, setIsDark] = useState<boolean>(false);
-  const theme = isDark ? "dark" : "light";
+  const theme: Theme = isDark ? Theme.Dark : Theme.Light;
   const toggleTheme = (event) => {
     const isChecked = event.target.checked;
     setIsDark(isChecked);
@@ -55,7 +38,7 @@ function App() {
     // TODO: Make this more robust (e.g. consider user's system settings, save to browser storage, etc.).
     document.documentElement.setAttribute(
       "data-bs-theme",
-      isChecked ? "dark" : "light",
+      isChecked ? Theme.Dark : Theme.Light,
     );
   };
 
@@ -64,13 +47,6 @@ function App() {
       <Navbar className="bg-body-tertiary" data-bs-theme={theme}>
         <Container>
           <Navbar.Brand>
-            <img
-              alt={"Monocle logo"}
-              src={"/logo-512x512.png"}
-              width={"30"}
-              height={"30"}
-              className={"d-inline-block align-top me-1"}
-            />
             Monocle
           </Navbar.Brand>
           <Navbar.Text className={"justify-content-end"}>
@@ -88,31 +64,16 @@ function App() {
       </Navbar>
       <Container>
         <h2 className={"mt-2"}>Makefile</h2>
-        <div>
-          <CodeMirror
-            autoFocus
+        <MakefileEditor
             theme={theme}
-            value={editorValue}
-            onChange={onEditorChange}
-            height={"200px"}
-            placeholder={"Paste your Makefile here..."}
-          />
-        </div>
-        <div className={"mt-3 mb-5"}>
-          <Button
-            onClick={onClickUpdateDiagram}
-            disabled={!isLastSubmittedEditorValueStale}
-            className={
-              isLastSubmittedEditorValueStale ? "shadow-sm" : "shadow-none"
-            }
-          >
-            Update diagram
-          </Button>
-        </div>
+            initialValue={initialEditorValue}
+            onChangeStaleness={setIsDiagramStale}
+            onSubmit={onSubmit}
+        />
         <h2>Diagram</h2>
         <div
           style={{
-            filter: isLastSubmittedEditorValueStale ? "blur(4px)" : undefined,
+            filter: isDiagramStale ? "blur(4px)" : undefined,
           }}
         >
           <Mermaid chart={diagramCode} config={{ mermaid: { theme } }} />
