@@ -3,3 +3,7 @@ export enum Theme {
   Dark = "dark",
   Light = "light",
 }
+
+export enum BrowserStorageKeys {
+  THEME = "theme",
+}

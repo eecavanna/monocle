@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { generateMermaidDiagramFromMakefile } from "./lib/helpers.ts";
+import {useLayoutEffect, useState} from "react";
+import {generateMermaidDiagramFromMakefile} from "./lib/helpers.ts";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
@@ -7,6 +7,7 @@ import Form from "react-bootstrap/Form";
 import Makefile from "./components/Makefile.tsx";
 import Diagram from "./components/Diagram.tsx";
 import {Theme} from "./constants.ts";
+import {getInitialTheme, saveTheme} from "./lib/theme.ts";
 
 function App() {
   const initialEditorValue = "# Paste your Makefile here\n\ntarget: dep1 dep2\ndep1: dep3\n";
@@ -26,20 +27,22 @@ function App() {
     setDiagramCode(mermaidCode);
   };
 
-  const [isDark, setIsDark] = useState<boolean>(false);
-  const theme: Theme = isDark ? Theme.Dark : Theme.Light;
+  const [theme, setTheme] = useState<Theme>(getInitialTheme());
+
   const toggleTheme = (event) => {
     const isChecked = event.target.checked;
-    setIsDark(isChecked);
-
-    // Update (creating if necessary) the "data-bs-theme" attribute of the `<html>` element, itself.
-    // Reference: https://getbootstrap.com/docs/5.3/customize/color-modes/#javascript
-    // TODO: Make this more robust (e.g. consider user's system settings, save to browser storage, etc.).
-    document.documentElement.setAttribute(
-      "data-bs-theme",
-      isChecked ? Theme.Dark : Theme.Light,
-    );
+    setTheme(isChecked ? Theme.Dark : Theme.Light);
   };
+
+  // Whenever the theme changes, update an attribute on the `<html>` element and update browser storage.
+  // Reference: https://getbootstrap.com/docs/5.3/customize/color-modes/#javascript
+  useLayoutEffect(() => {
+    const htmlEl = document.documentElement;
+    htmlEl.setAttribute("data-bs-theme", theme);
+
+    // Persist the theme identifier to browser storage.
+    saveTheme(theme);
+  }, [theme]);
 
   return (
     <>
@@ -55,7 +58,7 @@ function App() {
                 id={"theme-switch"}
                 label={"Night mode"}
                 onChange={toggleTheme}
-                checked={isDark}
+                checked={theme === Theme.Dark}
               />
             </Form>
           </Navbar.Text>
