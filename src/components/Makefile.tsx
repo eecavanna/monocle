@@ -66,19 +66,19 @@ const Makefile = ({
       </div>
       <div className={"mt-3 mb-5 d-flex justify-content-between"}>
         <Button
+          onClick={onEditorSubmit}
+          disabled={!isSubmittedValStale}
+          className={isSubmittedValStale ? "shadow-sm" : "shadow-none"}
+        >
+          Update diagram
+        </Button>
+        <Button
           onClick={restoreSubmittedVal}
           disabled={!isSubmittedValStale}
           className={isSubmittedValStale ? "shadow-sm" : "shadow-none"}
           variant={"secondary"}
         >
           Revert code
-        </Button>
-        <Button
-          onClick={onEditorSubmit}
-          disabled={!isSubmittedValStale}
-          className={isSubmittedValStale ? "shadow-sm" : "shadow-none"}
-        >
-          Update diagram
         </Button>
       </div>
     </>
