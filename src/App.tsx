@@ -1,13 +1,14 @@
 import {useLayoutEffect, useState} from "react";
 import {generateMermaidDiagramFromMakefile} from "./lib/helpers.ts";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap-icons/font/bootstrap-icons.min.css";
 import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
-import Form from "react-bootstrap/Form";
 import Makefile from "./components/Makefile.tsx";
 import Diagram from "./components/Diagram.tsx";
-import {Theme} from "./constants.ts";
-import {getInitialTheme, saveTheme} from "./lib/theme.ts";
+import { Theme } from "./constants.ts";
+import { getInitialTheme, saveTheme } from "./lib/theme.ts";
+import { ThemeSelector } from "./components/ThemeSelector.tsx";
 
 function App() {
   const initialEditorValue =
@@ -30,11 +31,6 @@ function App() {
 
   const [theme, setTheme] = useState<Theme>(getInitialTheme());
 
-  const toggleTheme = (event) => {
-    const isChecked = event.target.checked;
-    setTheme(isChecked ? Theme.Dark : Theme.Light);
-  };
-
   // Whenever the theme changes, update an attribute on the `<html>` element and update browser storage.
   // Reference: https://getbootstrap.com/docs/5.3/customize/color-modes/#javascript
   useLayoutEffect(() => {
@@ -47,21 +43,11 @@ function App() {
 
   return (
     <>
-      <Navbar className="bg-body-tertiary" data-bs-theme={theme}>
+      <Navbar className={"bg-body-tertiary"} data-bs-theme={theme}>
         <Container>
-          <Navbar.Brand>
-            Monocle
-          </Navbar.Brand>
-          <Navbar.Text className={"justify-content-end"}>
-            <Form>
-              <Form.Check
-                type={"switch"}
-                id={"theme-switch"}
-                label={"Night mode"}
-                onChange={toggleTheme}
-                checked={theme === Theme.Dark}
-              />
-            </Form>
+          <Navbar.Brand>Monocle</Navbar.Brand>
+          <Navbar.Text>
+            <ThemeSelector theme={theme} onSelect={setTheme} />
           </Navbar.Text>
         </Container>
       </Navbar>

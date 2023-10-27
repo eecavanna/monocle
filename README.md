@@ -19,6 +19,7 @@ Monocle is built upon the following technologies:
 - [React](https://react.dev/) 18
 - TypeScript 5
 - Bootstrap 5 (via [`react-bootstrap`](https://react-bootstrap.netlify.app/))
+- Bootstrap Icons (via [`bootstrap-icons`](https://icons.getbootstrap.com/))
 - Codemirror 6 (via [`@uiw/react-codemirror`](https://uiwjs.github.io/react-codemirror/))
 - Mermaid (via [`mdx-mermaid`](https://sjwall.github.io/mdx-mermaid/))
 - [Vitest](https://vitest.dev/)
