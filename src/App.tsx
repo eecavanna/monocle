@@ -1,5 +1,5 @@
-import {useLayoutEffect, useState} from "react";
-import {generateMermaidDiagramFromMakefile} from "./lib/helpers.ts";
+import { useLayoutEffect, useState } from "react";
+import { generateMermaidDiagramFromMakefile } from "./lib/helpers.ts";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.min.css";
 import Container from "react-bootstrap/Container";
@@ -15,12 +15,11 @@ function App() {
     "# Paste or drop your Makefile here\n\ntarget: dep1 dep2\ndep1: dep3\n";
 
   // This keeps track of whether the current editor value differs from the last-submitted editor value.
-  const [isDiagramStale, setIsDiagramStale] =
-    useState<boolean>(false);
+  const [isDiagramStale, setIsDiagramStale] = useState<boolean>(false);
 
   // This keeps track of the Mermaid diagram code underlying the rendered diagram.
   const [diagramCode, setDiagramCode] = useState<string>(
-    generateMermaidDiagramFromMakefile(initialEditorValue)
+    generateMermaidDiagramFromMakefile(initialEditorValue),
   );
 
   // This function parses the Makefile content, generating Mermaid diagram code.
@@ -54,16 +53,16 @@ function App() {
       <Container>
         <h2 className={"mt-5"}>Makefile</h2>
         <Makefile
-            theme={theme}
-            initialValue={initialEditorValue}
-            onChangeStaleness={setIsDiagramStale}
-            onSubmit={onSubmitMakefile}
+          theme={theme}
+          initialValue={initialEditorValue}
+          onChangeStaleness={setIsDiagramStale}
+          onSubmit={onSubmitMakefile}
         />
         <h2 className={"mt-5"}>Diagram</h2>
         <Diagram
-            isStale={isDiagramStale}
-            mermaidCode={diagramCode}
-            theme={theme}
+          isStale={isDiagramStale}
+          mermaidCode={diagramCode}
+          theme={theme}
         />
       </Container>
     </>
