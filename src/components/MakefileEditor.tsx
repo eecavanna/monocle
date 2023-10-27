@@ -47,6 +47,10 @@ const MakefileEditor = ({
     onSubmit(editorVal);
   };
 
+  const restoreSubmittedVal = () => {
+    setEditorVal(submittedEditorVal);
+  };
+
   return (
     <>
       <div>
@@ -59,18 +63,22 @@ const MakefileEditor = ({
           placeholder={"Paste your Makefile here..."}
         />
       </div>
-      <div className={"mt-3 mb-5"}>
+      <div className={"mt-3 mb-5 d-flex justify-content-between"}>
+        <Button
+          onClick={restoreSubmittedVal}
+          disabled={!isSubmittedValStale}
+          className={isSubmittedValStale ? "shadow-sm" : "shadow-none"}
+          variant={"secondary"}
+        >
+          Revert code
+        </Button>
         <Button
           onClick={onEditorSubmit}
           disabled={!isSubmittedValStale}
-          className={
-            // TODO: Animate the transition between blurred and not-blurred.
-            isSubmittedValStale ? "shadow-sm" : "shadow-none"
-          }
+          className={isSubmittedValStale ? "shadow-sm" : "shadow-none"}
         >
           Update diagram
         </Button>
-        {/* TODO: Add button to revert changes since most recent "submission". */}
       </div>
     </>
   );
