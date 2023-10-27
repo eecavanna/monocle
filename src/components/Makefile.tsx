@@ -78,7 +78,7 @@ const Makefile = ({
           className={isSubmittedValStale ? "shadow-sm" : "shadow-none"}
           variant={"secondary"}
         >
-          Revert code
+          Revert latest changes
         </Button>
       </div>
     </>
