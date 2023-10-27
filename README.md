@@ -70,9 +70,18 @@ npm run prettier
 
 ## Roadmap
 
-1. Apply syntax highlighting to `Makefile` content ([non-React example](https://github.com/V-Lor/codemirror-mode-makefile/blob/master/example/index.html))
+1. Apply syntax highlighting to the `Makefile` content ([non-React example](https://github.com/V-Lor/codemirror-mode-makefile/blob/master/example/index.html))
+2. If the URL query string contains a `Makefile` URL, automatically load the `Makefile` from there
+3. Allow the user to load a `Makefile` by entering its URL into a textbox
+4. Allow the user to upload a `Makefile` by browsing for it on their computer
+5. Automatically translate regular GitHub URLs into `raw.githubusercontent.com` URLs
+6. Expose the intermediate Mermaid diagram code
+7. Test SVG downloading on mobile devices
+8. Allow user to choose the graph direction (`TB` versus `LR`)
+9. Maybe: Add SVG pan and zoom
+10. Maybe: Store recently-viewed Makefiles in browser storage
 
 ## FAQ
 
 - Q: Why'd you name it "monocle?"
-- A: Because the word "monocle" has "m", "k", and "l" sounds like the word "Makefile" does, and a monocle is a thing people use to see stuff more clearly.
+- A: I went with the word "monocle" because its "m", "k", and "l" sounds are in the same order as in the word "Makefile", and a monocle is a thing people use to see things more clearly.
