@@ -44,7 +44,7 @@ const Diagram = ({ theme = Theme.Light, isStale, mermaidCode }: Props) => {
         <Mermaid chart={mermaidCode} config={{ mermaid: { theme } }} />
       </div>
       <div className={"mt-3"}>
-        {/* TODO: Saved diagram matches website's theme. Consider always saving the "light" theme one. */}
+        {/* TODO: Downloaded diagram always matches website's theme. Consider always downloading the "light" one. */}
         <Button
           onClick={onClickSave}
           disabled={isStale || mermaidCode.trim().length === 0}

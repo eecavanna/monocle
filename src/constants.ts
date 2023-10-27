@@ -7,3 +7,7 @@ export enum Theme {
 export enum BrowserStorageKeys {
   THEME = "theme",
 }
+
+export enum QueryParamKeys {
+  MAKEFILE_URL = "makefile_url",
+}

@@ -1,5 +1,5 @@
 import { useLayoutEffect, useState } from "react";
-import { generateMermaidDiagramFromMakefile } from "./lib/helpers.ts";
+import { generateDiagramCodeFromMakefile } from "./lib/helpers.ts";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.min.css";
 import Container from "react-bootstrap/Container";
@@ -19,12 +19,12 @@ function App() {
 
   // This keeps track of the Mermaid diagram code underlying the rendered diagram.
   const [diagramCode, setDiagramCode] = useState<string>(
-    generateMermaidDiagramFromMakefile(initialEditorValue),
+    generateDiagramCodeFromMakefile(initialEditorValue),
   );
 
   // This function parses the Makefile content, generating Mermaid diagram code.
   const onSubmitMakefile = (makefileContent: string) => {
-    const mermaidCode = generateMermaidDiagramFromMakefile(makefileContent);
+    const mermaidCode = generateDiagramCodeFromMakefile(makefileContent);
     setDiagramCode(mermaidCode);
   };
 
