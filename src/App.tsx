@@ -65,14 +65,14 @@ function App() {
         </Container>
       </Navbar>
       <Container>
-        <h2 className={"mt-2"}>Makefile</h2>
+        <h2 className={"mt-5"}>Makefile</h2>
         <Makefile
             theme={theme}
             initialValue={initialEditorValue}
             onChangeStaleness={setIsDiagramStale}
             onSubmit={onSubmitMakefile}
         />
-        <h2 className={"mt-2"}>Diagram</h2>
+        <h2 className={"mt-5"}>Diagram</h2>
         <Diagram
             isStale={isDiagramStale}
             mermaidCode={diagramCode}

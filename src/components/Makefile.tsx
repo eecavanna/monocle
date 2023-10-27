@@ -54,7 +54,8 @@ const Makefile = ({
 
   return (
     <>
-      <div>
+      <div className={"mb-3"}>
+        {/* TODO: Give the editor a border-radius to match the nearby Bootstrap elements. */}
         <CodeMirror
           autoFocus
           theme={theme}
@@ -64,7 +65,7 @@ const Makefile = ({
           placeholder={"Paste your Makefile here..."}
         />
       </div>
-      <div className={"mt-3 mb-5 d-flex justify-content-between"}>
+      <div className={"d-flex justify-content-between"}>
         <Button
           onClick={onEditorSubmit}
           disabled={!isSubmittedValStale}

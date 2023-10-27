@@ -29,11 +29,13 @@ const Diagram = ({ theme = Theme.Light, isStale, mermaidCode }: Props) => {
     }
   };
 
+  const backgroundColor = theme === Theme.Dark ? "#282c34" : "#ffffff"; // mimics CodeMirror
+
   return (
     <>
       <div
         ref={diagramWrapperRef}
-        style={{ filter: isStale ? "blur(4px)" : undefined }}
+        style={{ filter: isStale ? "blur(4px)" : undefined, backgroundColor, padding: 24 }}
       >
         <Mermaid chart={mermaidCode} config={{ mermaid: { theme } }} />
       </div>
