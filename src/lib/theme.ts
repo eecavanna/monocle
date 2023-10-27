@@ -31,12 +31,12 @@ export const loadTheme = (): string | null =>
  * - https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme
  * - https://developer.mozilla.org/en-US/docs/Web/API/Window/matchMedia
  */
-export const getProgrammaticThemePreference = (): Theme | undefined => {
+export const getProgrammaticThemePreference = (): Theme | null => {
   const queryPrefersDark = "(prefers-color-scheme: dark)";
   const queryPrefersLight = "(prefers-color-scheme: light)";
   const prefersDark = window.matchMedia(queryPrefersDark);
   const prefersLight = window.matchMedia(queryPrefersLight);
-  return prefersDark ? Theme.Dark : prefersLight ? Theme.Light : undefined;
+  return prefersDark ? Theme.Dark : prefersLight ? Theme.Light : null;
 };
 
 /**
@@ -58,7 +58,7 @@ export const getInitialTheme = (): Theme => {
   }
 
   // Fallback: If we didn't get a theme preference or saved theme, default to dark.
-  if (theme === null || theme === undefined) {
+  if (theme === null) {
     theme = Theme.Dark;
   }
 
