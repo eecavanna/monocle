@@ -67,6 +67,7 @@ const Makefile = ({
         {/* TODO: Give the editor a border-radius to match the nearby Bootstrap elements. */}
         <CodeMirror
           autoFocus
+          indentWithTab={false} // allow user to "tab" around the web page, not indent within the editor
           theme={theme}
           value={editorVal}
           onChange={onEditorChange}
