@@ -52,6 +52,15 @@ const Makefile = ({
     setEditorVal(submittedEditorVal);
   };
 
+  const [isDragging, setIsDragging] = useState<boolean>(false);
+
+  const onDrop = () => {
+    setEditorVal("");
+    setIsDragging(false);
+  };
+  const onDragEnter = () => setIsDragging(true);
+  const onDragLeave = () => setIsDragging(false);
+
   return (
     <>
       <div className={"mb-3"}>
@@ -63,6 +72,20 @@ const Makefile = ({
           onChange={onEditorChange}
           height={"200px"}
           placeholder={"Paste your Makefile here..."}
+          // Note: Drag-and-drop functionality is built into CodeMirror; but drag-and-drop styling is not.
+          //
+          // References:
+          // - https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/drop_event
+          // - https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/dragenter_event
+          // - https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/dragleave_event
+          //
+          onDrop={onDrop} // empties the editor before dropping content
+          onDragEnter={onDragEnter}
+          onDragLeave={onDragLeave}
+          style={{
+            outlineWidth: isDragging ? 4 : 0,
+            outlineStyle: "solid",
+          }}
         />
       </div>
       <div className={"d-flex justify-content-between"}>
