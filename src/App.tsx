@@ -8,13 +8,12 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.min.css";
 import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
-import Placeholder from "react-bootstrap/Placeholder";
+import Spinner from "react-bootstrap/Spinner";
 import Makefile from "./components/Makefile.tsx";
 import Diagram from "./components/Diagram.tsx";
 import { Theme } from "./constants.ts";
 import { getInitialTheme, saveTheme } from "./lib/theme.ts";
 import { ThemeSelector } from "./components/ThemeSelector.tsx";
-import FormPlaceholder from "./components/FormPlaceholder.tsx";
 
 function App() {
   const [initialEditorValue, setInitialEditorValue] = useState<string>(
@@ -47,7 +46,7 @@ function App() {
     saveTheme(theme);
   }, [theme]);
 
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // Whenever the component loads (effectively, whenever the page loads), process the query string.
   useEffect(() => {
@@ -57,6 +56,8 @@ function App() {
   const processQueryStr = async () => {
     const url = readMakefileUrlFromQueryStr(window.location.search);
     if (typeof url === "string") {
+      setIsLoading(true);
+      console.info(`Fetching Makefile from URL: `, url);
       const fetchedMakefileContents = await fetchMakefileContentsFromUrl(url);
       if (typeof fetchedMakefileContents === "string") {
         setInitialEditorValue(fetchedMakefileContents);
@@ -65,18 +66,18 @@ function App() {
       } else {
         console.warn(`No content was available at the specified URL.`);
       }
-
-      setIsLoading(false);
-    } else {
-      setIsLoading(false);
     }
+
+    setIsLoading(false);
   };
 
   return (
     <>
       <Navbar className={"bg-body-tertiary"} data-bs-theme={theme}>
         <Container>
-          <Navbar.Brand>Monocle</Navbar.Brand>
+          <Navbar.Brand className={"d-flex align-items-center"}>
+            <span>Monocle</span>
+          </Navbar.Brand>
           <Navbar.Text>
             <ThemeSelector theme={theme} onSelect={setTheme} />
           </Navbar.Text>
@@ -84,10 +85,9 @@ function App() {
       </Navbar>
       <Container>
         {isLoading ? (
-          <Placeholder as={"div"} animation={"wave"}>
-            <FormPlaceholder />
-            <FormPlaceholder />
-          </Placeholder>
+          <Spinner animation={"grow"} role={"status"}>
+            <span className={"visually-hidden"}>Loading...</span>
+          </Spinner>
         ) : (
           <>
             <h2 className={"mt-5"}>Makefile</h2>
