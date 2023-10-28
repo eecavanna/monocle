@@ -53,6 +53,7 @@ const Diagram = ({
 
   return (
     <>
+      <h2>Diagram</h2>
       <div
         style={{
           filter: isStale ? "blur(4px)" : undefined,

@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import Button from "react-bootstrap/Button";
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import Tooltip from "react-bootstrap/Tooltip";
 import { Theme } from "../constants.ts";
 
 interface Props {
@@ -66,6 +68,19 @@ const Makefile = ({
 
   return (
     <>
+      <div className={"d-flex justify-content-between"}>
+        <h2>Makefile</h2>
+        <OverlayTrigger overlay={<Tooltip>Undo latest changes</Tooltip>}>
+          <Button
+            onClick={restoreSubmittedVal}
+            disabled={!isSubmittedValStale}
+            className={isSubmittedValStale ? "text-muted" : "text-secondary"} // increases contrast between the two states
+            variant={"link"}
+          >
+            <i className={`bi bi-arrow-counterclockwise me-1`}></i>
+          </Button>
+        </OverlayTrigger>
+      </div>
       <div className={"mb-3"}>
         {/* TODO: Give the editor a border-radius to match the nearby Bootstrap elements. */}
         <CodeMirror
@@ -102,14 +117,6 @@ const Makefile = ({
           className={isSubmittedValStale ? "shadow-sm" : "shadow-none"}
         >
           Update diagram
-        </Button>
-        <Button
-          onClick={restoreSubmittedVal}
-          disabled={!isSubmittedValStale}
-          className={isSubmittedValStale ? "shadow-sm" : "shadow-none"}
-          variant={"secondary"}
-        >
-          Revert latest changes
         </Button>
       </div>
     </>

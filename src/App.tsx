@@ -117,20 +117,22 @@ function App() {
           </Spinner>
         ) : (
           <>
-            <h2 className={"mt-5"}>Makefile</h2>
-            <Makefile
-              theme={theme}
-              initialValue={initialEditorValue}
-              onChangeStaleness={setIsEdited}
-              onSubmit={syncMermaidCodeWithMakefileContent}
-            />
-            <h2 className={"mt-5"}>Diagram</h2>
-            <Diagram
-              isStale={isEdited}
-              mermaidCode={mermaidCode}
-              theme={theme}
-              onMermaidCodeCopied={showCopyToast}
-            />
+            <div className={"mt-5"}>
+              <Makefile
+                theme={theme}
+                initialValue={initialEditorValue}
+                onChangeStaleness={setIsEdited}
+                onSubmit={syncMermaidCodeWithMakefileContent}
+              />
+            </div>
+            <div className={"mt-5"}>
+              <Diagram
+                isStale={isEdited}
+                mermaidCode={mermaidCode}
+                theme={theme}
+                onMermaidCodeCopied={showCopyToast}
+              />
+            </div>
           </>
         )}
       </Container>
