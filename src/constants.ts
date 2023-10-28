@@ -4,10 +4,15 @@ export enum Theme {
   Light = "light",
 }
 
-export enum BrowserStorageKeys {
+export enum BrowserStorageKey {
   THEME = "theme",
 }
 
-export enum QueryParamKeys {
+export enum QueryParamKey {
   MAKEFILE_URL = "makefile_url",
+}
+
+export enum MermaidGraphDirection {
+  LR = "LR",
+  TB = "TB",
 }

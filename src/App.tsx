@@ -9,13 +9,24 @@ import "bootstrap-icons/font/bootstrap-icons.min.css";
 import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
 import Spinner from "react-bootstrap/Spinner";
+import ToastContainer from "react-bootstrap/ToastContainer";
 import Makefile from "./components/Makefile.tsx";
 import Diagram from "./components/Diagram.tsx";
+import CustomToast from "./components/CustomToast.tsx";
 import { Theme } from "./constants.ts";
 import { getInitialTheme, saveTheme } from "./lib/theme.ts";
 import { ThemeSelector } from "./components/ThemeSelector.tsx";
 
 function App() {
+  // Keep track of whether specific toast notifications are visible.
+  // TODO: Consider tracking these things with a reducer and having child component dispatch actions to that reducer.
+  const [isCopyToastVisible, setIsCopyToastVisible] = useState<boolean>(false);
+  const showCopyToast = () => setIsCopyToastVisible(true);
+  const hideCopyToast = () => setIsCopyToastVisible(false);
+
+  const [isLoadToastVisible, setIsLoadToastVisible] = useState<boolean>(false);
+  const hideLoadToast = () => setIsLoadToastVisible(false);
+
   const [initialEditorValue, setInitialEditorValue] = useState<string>(
     "# Paste or drop your Makefile here\n\ntarget: dep1 dep2\ndep1: dep3\n",
   );
@@ -74,6 +85,7 @@ function App() {
         if (typeof fetchedMakefileContent === "string") {
           setInitialEditorValue(fetchedMakefileContent);
           syncMermaidCodeWithMakefileContent(fetchedMakefileContent);
+          setIsLoadToastVisible(true);
         } else {
           console.warn(`No content was available at the specified URL.`);
         }
@@ -117,10 +129,27 @@ function App() {
               isStale={isEdited}
               mermaidCode={mermaidCode}
               theme={theme}
+              onMermaidCodeCopied={showCopyToast}
             />
           </>
         )}
       </Container>
+      <ToastContainer
+        className={"p-3"}
+        position={"top-center"}
+        style={{ zIndex: 1 }}
+      >
+        <CustomToast
+          onClose={hideCopyToast}
+          isVisible={isCopyToastVisible}
+          body={"Mermaid code has been copied to your clipboard."}
+        />
+        <CustomToast
+          onClose={hideLoadToast}
+          isVisible={isLoadToastVisible}
+          body={"Makefile content has been loaded from URL."}
+        />
+      </ToastContainer>
     </>
   );
 }

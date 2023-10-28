@@ -9,12 +9,20 @@ interface Props {
   theme?: Theme;
   isStale: boolean;
   mermaidCode: string;
+  onMermaidCodeCopied?: () => void;
 }
 
 const MIME_TYPE_SVG = "image/svg+xml";
 
-const Diagram = ({ theme = Theme.Light, isStale, mermaidCode }: Props) => {
+const Diagram = ({
+  theme = Theme.Light,
+  isStale,
+  mermaidCode,
+  onMermaidCodeCopied,
+}: Props) => {
   const diagramWrapperRef = useRef<HTMLDivElement>(null);
+
+  const isMermaidCodeEmpty = mermaidCode.trim().length === 0;
 
   const onClickDownloadSvg = () => {
     if (diagramWrapperRef.current !== null) {
@@ -30,10 +38,17 @@ const Diagram = ({ theme = Theme.Light, isStale, mermaidCode }: Props) => {
   };
 
   const onClickCopyMermaidCode = () => {
-    const onCopy = () => {
-      alert("Copied Mermaid code to clipboard.");
-    };
-    copy(mermaidCode, { onCopy });
+    // Copy the Mermaid code to the clipboard.
+    //
+    // Note: The `onCopy` option (no longer being used here) prevents text from being copied to the clipboard.
+    //       Reference: https://github.com/sudodoki/copy-to-clipboard/issues/98
+    //
+    copy(mermaidCode);
+
+    // If a callback function was provided, invoke it now.
+    if (typeof onMermaidCodeCopied === "function") {
+      onMermaidCodeCopied();
+    }
   };
 
   const backgroundColor = theme === Theme.Dark ? "#282c34" : "#ffffff"; // mimics CodeMirror
@@ -47,19 +62,24 @@ const Diagram = ({ theme = Theme.Light, isStale, mermaidCode }: Props) => {
           padding: 24,
         }}
       >
-        <Mermaid chart={mermaidCode} config={{ mermaid: { theme } }} />
+        {/* Only render the Mermaid component if the Mermaid code is not empty, since the component can't handle emptiness. */}
+        {isMermaidCodeEmpty ? (
+          <div></div>
+        ) : (
+          <Mermaid chart={mermaidCode} config={{ mermaid: { theme } }} />
+        )}
       </div>
       <div className={"mt-3 d-flex justify-content-between"}>
         {/* TODO: Downloaded diagram always matches website's theme. Consider always downloading the "light" one. */}
         <Button
           onClick={onClickDownloadSvg}
-          disabled={isStale || mermaidCode.trim().length === 0}
+          disabled={isStale || isMermaidCodeEmpty}
         >
           Download SVG
         </Button>
         <Button
           onClick={onClickCopyMermaidCode}
-          disabled={isStale || mermaidCode.trim().length === 0}
+          disabled={isStale || isMermaidCodeEmpty}
         >
           Copy Mermaid
         </Button>

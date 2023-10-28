@@ -1,4 +1,4 @@
-import { BrowserStorageKeys, Theme } from "../constants.ts";
+import { BrowserStorageKey, Theme } from "../constants.ts";
 
 /**
  * Checks whether a value is a valid theme identifier.
@@ -15,13 +15,13 @@ export const isValidTheme = (val?: string | null) => {
  * @param theme {Theme} The theme identifier you want to persist
  */
 export const saveTheme = (theme: Theme) =>
-  localStorage.setItem(BrowserStorageKeys.THEME, theme);
+  localStorage.setItem(BrowserStorageKey.THEME, theme);
 
 /**
  * Retrieve the theme from browser storage, or return `null` if none exists.
  */
 export const loadTheme = (): string | null =>
-  localStorage.getItem(BrowserStorageKeys.THEME);
+  localStorage.getItem(BrowserStorageKey.THEME);
 
 /**
  * Get the theme that the user's operating system or user agent claims that they prefer.

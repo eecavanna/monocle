@@ -2,7 +2,7 @@ import parseMakefile, {
   TargetDescriptorNode,
   VariableDescriptorNode,
 } from "@kba/makefile-parser";
-import { QueryParamKeys } from "../constants.ts";
+import { MermaidGraphDirection, QueryParamKey } from "../constants.ts";
 
 /**
  * Converts non-raw GitHub URLs into raw GitHub URLs.
@@ -62,7 +62,7 @@ export const fetchMakefileContentFromUrl = async (makefileUrl: string) => {
 export const readMakefileUrlFromQueryStr = (
   queryStr: string,
 ): string | null => {
-  const key = QueryParamKeys.MAKEFILE_URL;
+  const key = QueryParamKey.MAKEFILE_URL;
   const params = new URLSearchParams(queryStr);
   const submittedUrl = params.get(key);
 
@@ -125,10 +125,12 @@ export const isTargetDescriptor = (
  * Parses the Makefile content and produces the corresponding Mermaid code, which can be rendered as a diagram.
  *
  * @param makefileContent {string} Makefile content
+ * @param direction {string} Whether you want the diagram to flow from top to bottom ("TB") or left to right ("LR")
  * @return diagramCode {string} Mermaid code
  */
 export const generateMermaidCodeFromMakefile = (
   makefileContent: string,
+  direction: MermaidGraphDirection = MermaidGraphDirection.LR,
 ): string => {
   // Parse the Makefile content into a list of nodes.
   const { ast: nodes } = parseMakefile(makefileContent);
@@ -142,10 +144,9 @@ export const generateMermaidCodeFromMakefile = (
       }
     });
 
-  // Initialize an array of lines of code that, when joined by newlines, describe a Mermaid diagram.
+  // Initialize an array of lines of code that, when joined by newlines and preceded by a Mermaid code header,
+  // constitute Mermaid code for a graph.
   const mermaidCodeLines: Array<string> = [];
-  mermaidCodeLines.push("%% Mermaid diagram"); // "%%" precedes a comment
-  mermaidCodeLines.push("graph LR"); // "graph" is an alias for "flowchart"
 
   // Get the nodes that represent Make targets.
   nodes
@@ -168,6 +169,17 @@ export const generateMermaidCodeFromMakefile = (
       });
     });
 
-  const mermaidCode = mermaidCodeLines.join("\n");
+  // Assume
+  let mermaidCode = "";
+
+  // If there are any Mermaid code body lines, combine the header and body lines.
+  if (mermaidCodeLines.length > 0) {
+    mermaidCode = [
+      `%% Mermaid diagram`, // "%%" precedes a comment
+      `graph ${direction}`, // "graph" is an alias for "flowchart"
+      ...mermaidCodeLines,
+    ].join("\n");
+  }
+
   return mermaidCode;
 };
