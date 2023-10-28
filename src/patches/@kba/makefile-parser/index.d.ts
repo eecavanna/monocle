@@ -6,20 +6,21 @@
 
 declare module '@kba/makefile-parser' {
     type Options = { strict: boolean; unhandled: boolean; };
-    type VariableDescriptor = {
+    export type VariableDescriptorNode = {
         variable: string;
         value: string;
         comment: Array<string>;
     };
-    type TargetDescriptor = {
+    export type TargetDescriptorNode = {
       target: string;
       deps: Array<string>;
       recipe: Array<string>;
       comment: Array<string>;
     };
+    type ASTNode = VariableDescriptorNode|TargetDescriptorNode;
     type Context = {
         PHONY: Array<string>;
-        ast: Array<VariableDescriptor|TargetDescriptor>;
+        ast: Array<ASTNode>;
         unhandled: Array<string>;
     };
 

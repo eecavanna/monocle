@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useState } from "react";
 import {
-  fetchMakefileContentsFromUrl,
-  generateDiagramCodeFromMakefile,
+  fetchMakefileContentFromUrl,
+  generateMermaidCodeFromMakefile,
   readMakefileUrlFromQueryStr,
 } from "./lib/helpers.ts";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -20,18 +20,22 @@ function App() {
     "# Paste or drop your Makefile here\n\ntarget: dep1 dep2\ndep1: dep3\n",
   );
 
-  // This keeps track of whether the current editor value differs from the last-submitted editor value.
-  const [isDiagramStale, setIsDiagramStale] = useState<boolean>(false);
+  // Keep track of whether the current editor value differs from the last-submitted editor value.
+  const [isEdited, setIsEdited] = useState<boolean>(false);
 
-  // This keeps track of the Mermaid diagram code underlying the rendered diagram.
-  const [diagramCode, setDiagramCode] = useState<string>(
-    generateDiagramCodeFromMakefile(initialEditorValue),
+  // Keep track of the Mermaid code underlying the rendered diagram.
+  const [mermaidCode, setMermaidCode] = useState<string>(
+    generateMermaidCodeFromMakefile(initialEditorValue),
   );
 
-  // This function parses the Makefile content, generating Mermaid diagram code.
-  const onSubmitMakefile = (makefileContent: string) => {
-    const mermaidCode = generateDiagramCodeFromMakefile(makefileContent);
-    setDiagramCode(mermaidCode);
+  /**
+   * Converts Makefile content into Mermaid code and stores the latter in the component's state.
+   *
+   * @param makefileContent
+   */
+  const syncMermaidCodeWithMakefileContent = (makefileContent: string) => {
+    const code = generateMermaidCodeFromMakefile(makefileContent);
+    setMermaidCode(code);
   };
 
   const [theme, setTheme] = useState<Theme>(getInitialTheme());
@@ -49,27 +53,38 @@ function App() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // Whenever the component loads (effectively, whenever the page loads), process the query string.
+  //
+  // Note: The callback function passed to `useEffect` cannot be async, so I am passing a synchronous function
+  //       instead; and, within that synchronous function, calling an async function.
+  //
   useEffect(() => {
-    processQueryStr(); // we ignore the returned promise
-  }, []);
+    /**
+     * Checks whether the URL query string contains a URL and—if it does—fetches content from it,
+     * loads that content into the Makefile editor, and synchronizes the Mermaid code with it.
+     */
+    const processQueryStr = async () => {
+      const url = readMakefileUrlFromQueryStr(window.location.search);
+      // If there is a URL to fetch, fetch it.
+      if (typeof url === "string") {
+        setIsLoading(true);
+        console.info(`Fetching Makefile from URL: `, url);
+        const fetchedMakefileContent = await fetchMakefileContentFromUrl(url);
 
-  const processQueryStr = async () => {
-    const url = readMakefileUrlFromQueryStr(window.location.search);
-    if (typeof url === "string") {
-      setIsLoading(true);
-      console.info(`Fetching Makefile from URL: `, url);
-      const fetchedMakefileContents = await fetchMakefileContentsFromUrl(url);
-      if (typeof fetchedMakefileContents === "string") {
-        setInitialEditorValue(fetchedMakefileContents);
-        const c = generateDiagramCodeFromMakefile(fetchedMakefileContents);
-        setDiagramCode(c);
-      } else {
-        console.warn(`No content was available at the specified URL.`);
+        // If we got Makefile content from that URL, load it into the editor and sync the Mermaid code.
+        if (typeof fetchedMakefileContent === "string") {
+          setInitialEditorValue(fetchedMakefileContent);
+          syncMermaidCodeWithMakefileContent(fetchedMakefileContent);
+        } else {
+          console.warn(`No content was available at the specified URL.`);
+        }
       }
-    }
 
-    setIsLoading(false);
-  };
+      setIsLoading(false);
+    };
+
+    // Invoke the async function (ignoring the returned Promise).
+    processQueryStr();
+  }, []);
 
   return (
     <>
@@ -94,13 +109,13 @@ function App() {
             <Makefile
               theme={theme}
               initialValue={initialEditorValue}
-              onChangeStaleness={setIsDiagramStale}
-              onSubmit={onSubmitMakefile}
+              onChangeStaleness={setIsEdited}
+              onSubmit={syncMermaidCodeWithMakefileContent}
             />
             <h2 className={"mt-5"}>Diagram</h2>
             <Diagram
-              isStale={isDiagramStale}
-              mermaidCode={diagramCode}
+              isStale={isEdited}
+              mermaidCode={mermaidCode}
               theme={theme}
             />
           </>

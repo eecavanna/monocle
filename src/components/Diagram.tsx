@@ -31,7 +31,7 @@ const Diagram = ({ theme = Theme.Light, isStale, mermaidCode }: Props) => {
 
   const onClickCopyMermaidCode = () => {
     const onCopy = () => {
-      alert("Copied Mermaid diagram code to clipboard.");
+      alert("Copied Mermaid code to clipboard.");
     };
     copy(mermaidCode, { onCopy });
   };

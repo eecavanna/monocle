@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
-  generateDiagramCodeFromMakefile,
+  generateMermaidCodeFromMakefile,
   normalizeGitHubUrl,
   readMakefileUrlFromQueryStr,
 } from "./helpers.ts";
@@ -94,9 +94,9 @@ describe(readMakefileUrlFromQueryStr.name, () => {
   });
 });
 
-describe(generateDiagramCodeFromMakefile.name, () => {
+describe(generateMermaidCodeFromMakefile.name, () => {
   // TODO: Supplement this with multiple, more granular tests (it tests multiple things right now).
-  it("generates diagram code from Makefile", () => {
+  it("generates Mermaid code from Makefile", () => {
     const makefileContent = [
       "a: b c \\", // dependencies span multiple lines
       "d",
@@ -106,7 +106,7 @@ describe(generateDiagramCodeFromMakefile.name, () => {
       "b: c # other comment",
     ].join("\n");
 
-    const diagramCode = [
+    const mermaidCode = [
       "%% Mermaid diagram",
       "graph LR",
       "  a", // target
@@ -117,6 +117,6 @@ describe(generateDiagramCodeFromMakefile.name, () => {
       "    b --> c",
     ].join("\n");
 
-    expect(generateDiagramCodeFromMakefile(makefileContent)).toBe(diagramCode);
+    expect(generateMermaidCodeFromMakefile(makefileContent)).toBe(mermaidCode);
   });
 });

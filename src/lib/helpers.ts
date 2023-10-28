@@ -1,4 +1,7 @@
-import parseMakefile from "@kba/makefile-parser";
+import parseMakefile, {
+  TargetDescriptorNode,
+  VariableDescriptorNode,
+} from "@kba/makefile-parser";
 import { QueryParamKeys } from "../constants.ts";
 
 /**
@@ -33,7 +36,7 @@ export const normalizeGitHubUrl = (url: string) => {
  *
  * @param makefileUrl {string} The URL of the file
  */
-export const fetchMakefileContentsFromUrl = async (makefileUrl: string) => {
+export const fetchMakefileContentFromUrl = async (makefileUrl: string) => {
   let text;
 
   try {
@@ -106,48 +109,65 @@ export const sanitizeDeps = (orderedDeps: Array<string>): Array<string> => {
 };
 
 /**
- * Parses the Makefile content and produces code for a corresponding Mermaid diagram.
+ * Helper function that returns true if the AST node passed in is a TargetDescriptor.
+ *
+ * @param node
+ */
+export const isTargetDescriptor = (
+  node: TargetDescriptorNode | VariableDescriptorNode,
+): boolean => {
+  // Note: We use `Object.prototype.hasOwnProperty.call(obj, "property")` instead of `obj.hasOwnProperty("property")`
+  //       to avoid breaking the following ESLint rule: https://eslint.org/docs/latest/rules/no-prototype-builtins
+  return Object.prototype.hasOwnProperty.call(node, "target");
+};
+
+/**
+ * Parses the Makefile content and produces the corresponding Mermaid code, which can be rendered as a diagram.
  *
  * @param makefileContent {string} Makefile content
- * @return diagramCode {string} Mermaid diagram code
+ * @return diagramCode {string} Mermaid code
  */
-export const generateDiagramCodeFromMakefile = (
+export const generateMermaidCodeFromMakefile = (
   makefileContent: string,
 ): string => {
   // Parse the Makefile content into a list of nodes.
   const { ast: nodes } = parseMakefile(makefileContent);
 
   // Do some post-processing/sanitization of the AST.
-  nodes.forEach((node) => {
-    if (Array.isArray(node.deps)) {
-      node.deps = sanitizeDeps(node.deps);
-    }
-  });
+  nodes
+    .filter((node): node is TargetDescriptorNode => isTargetDescriptor(node))
+    .forEach((node) => {
+      if (Array.isArray(node.deps)) {
+        node.deps = sanitizeDeps(node.deps);
+      }
+    });
 
   // Initialize an array of lines of code that, when joined by newlines, describe a Mermaid diagram.
-  const diagramCodeLines: Array<string> = [];
-  diagramCodeLines.push("%% Mermaid diagram"); // "%%" precedes a comment
-  diagramCodeLines.push("graph LR"); // "graph" is an alias for "flowchart"
+  const mermaidCodeLines: Array<string> = [];
+  mermaidCodeLines.push("%% Mermaid diagram"); // "%%" precedes a comment
+  mermaidCodeLines.push("graph LR"); // "graph" is an alias for "flowchart"
 
   // Get the nodes that represent Make targets.
   nodes
-    // Filter out nodes lacking a "target" key, and nodes where target begins with "#" or ".".
+    // Filter out nodes that describe Make variables instead of Make targets.
+    //
+    // Note: We also tell TypeScript that each remaining node (from this filter) will be a target descriptor node.
+    //       Reference: https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates (RE: `is`)
+    //
+    .filter((node): node is TargetDescriptorNode => isTargetDescriptor(node))
+    // Filter out nodes where the target identifier begins with "#" or ".".
     .filter((node) => {
-      return (
-        typeof node.target === "string" &&
-        !node.target.startsWith("#") &&
-        !node.target.startsWith(".")
-      );
+      return !node.target.startsWith("#") && !node.target.startsWith(".");
     })
     // Generate Mermaid code describing the remaining nodes.
     .forEach((node) => {
       const { target, deps } = node;
-      diagramCodeLines.push(`  ${target}`);
+      mermaidCodeLines.push(`  ${target}`);
       deps?.forEach((dep) => {
-        diagramCodeLines.push(`    ${target} --> ${dep}`);
+        mermaidCodeLines.push(`    ${target} --> ${dep}`);
       });
     });
 
-  const diagramCode = diagramCodeLines.join("\n");
-  return diagramCode;
+  const mermaidCode = mermaidCodeLines.join("\n");
+  return mermaidCode;
 };
