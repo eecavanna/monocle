@@ -1,16 +1,25 @@
 /**
- * This file contains "minimal" type information for the `@kba/makefile-parser` module;
- * enough to resolve the following error, plus any additional type information I found
- * quick and easy to infer from the module's JavaScript code.
- *
- * > TS2307: Cannot find module '@kba/makefile-parser' or its corresponding type declarations.
+ * This file contains TypeScript type information for the `@kba/makefile-parser` package, which doesn't include any.
+ * This specific type information was inferred by me from the package's source code and documentation,
+ * as of version `0.0.6` of the package, which was published to NPM in 2021.
  */
 
 declare module '@kba/makefile-parser' {
     type Options = { strict: boolean; unhandled: boolean; };
+    type VariableDescriptor = {
+        variable: string;
+        value: string;
+        comment: Array<string>;
+    };
+    type TargetDescriptor = {
+      target: string;
+      deps: Array<string>;
+      recipe: Array<string>;
+      comment: Array<string>;
+    };
     type Context = {
-        PHONY: []; // TODO: Add information
-        ast: Array<{ target?: string; deps?: Array<string>; }>;
+        PHONY: Array<string>;
+        ast: Array<VariableDescriptor|TargetDescriptor>;
         unhandled: Array<string>;
     };
 
