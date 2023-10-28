@@ -4,26 +4,26 @@
  * as of version `0.0.6` of the package, which was published to NPM in 2021.
  */
 
-declare module '@kba/makefile-parser' {
-    type Options = { strict: boolean; unhandled: boolean; };
-    export type VariableDescriptorNode = {
-        variable: string;
-        value: string;
-        comment: Array<string>;
-    };
-    export type TargetDescriptorNode = {
-      target: string;
-      deps: Array<string>;
-      recipe: Array<string>;
-      comment: Array<string>;
-    };
-    type ASTNode = VariableDescriptorNode|TargetDescriptorNode;
-    type Context = {
-        PHONY: Array<string>;
-        ast: Array<ASTNode>;
-        unhandled: Array<string>;
-    };
+declare module "@kba/makefile-parser" {
+  type Options = { strict: boolean; unhandled: boolean };
+  export type VariableDescriptorNode = {
+    variable: string;
+    value: string;
+    comment: Array<string>;
+  };
+  export type TargetDescriptorNode = {
+    target: string;
+    deps: Array<string>;
+    recipe: Array<string>;
+    comment: Array<string>;
+  };
+  type ASTNode = VariableDescriptorNode | TargetDescriptorNode;
+  type Context = {
+    PHONY: Array<string>;
+    ast: Array<ASTNode>;
+    unhandled: Array<string>;
+  };
 
-    const parseMakefile: (makefileContent: string, options?: Options) => Context;
-    export default parseMakefile;
+  const parseMakefile: (makefileContent: string, options?: Options) => Context;
+  export default parseMakefile;
 }
