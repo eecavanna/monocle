@@ -82,8 +82,11 @@ const Makefile = ({
           onDrop={onDrop} // empties the editor before dropping content
           onDragEnter={onDragEnter}
           onDragLeave={onDragLeave}
+          // TODO: Re-introduce drag-and-drop styling once I figure out the following flickering issue:
+          //       Dragging over populated lines or leaving the gutter, causes onDragLeave to fire, resulting in
+          //       isDragging toggling. When styles depend on isDragging, that can result in those styles flickering.
           style={{
-            outlineWidth: isDragging ? 4 : 0,
+            outlineWidth: isDragging ? 0 : 0, // TODO: Revert to `4 : 0` after fixing the flickering issue mentioned above.
             outlineStyle: "solid",
           }}
         />
