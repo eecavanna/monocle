@@ -16,3 +16,7 @@ export enum MermaidGraphDirection {
   LR = "LR",
   TB = "TB",
 }
+
+export enum MIMEType {
+  SVG = "image/svg+xml",
+}

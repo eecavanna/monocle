@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { Theme } from "../constants.ts";
+import { MIMEType, Theme } from "../constants.ts";
 import { Mermaid } from "mdx-mermaid/lib/Mermaid";
 import Button from "react-bootstrap/Button";
 import { saveAs } from "file-saver";
@@ -11,8 +11,6 @@ interface Props {
   mermaidCode: string;
   onMermaidCodeCopied?: () => void;
 }
-
-const MIME_TYPE_SVG = "image/svg+xml";
 
 const Diagram = ({
   theme = Theme.Light,
@@ -31,7 +29,7 @@ const Diagram = ({
       const svgCode = svgEl.outerHTML;
 
       const file = new File([svgCode], "diagram.svg", {
-        type: MIME_TYPE_SVG + ";charset=utf-8",
+        type: MIMEType.SVG + ";charset=utf-8",
       });
       saveAs(file);
     }
