@@ -4,6 +4,8 @@ import { Mermaid } from "mdx-mermaid/lib/Mermaid";
 import Button from "react-bootstrap/Button";
 import { saveAs } from "file-saver";
 import copy from "copy-to-clipboard";
+import Tooltip from "react-bootstrap/Tooltip";
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 
 interface Props {
   theme?: Theme;
@@ -69,19 +71,30 @@ const Diagram = ({
         )}
       </div>
       <div className={"mt-3 d-flex justify-content-between"}>
-        {/* TODO: Downloaded diagram always matches website's theme. Consider always downloading the "light" one. */}
-        <Button
-          onClick={onClickDownloadSvg}
-          disabled={isStale || isMermaidCodeEmpty}
+        <OverlayTrigger
+          delay={{ show: 1000, hide: 500 }}
+          overlay={<Tooltip>Download the diagram in SVG format</Tooltip>}
         >
-          Download SVG
-        </Button>
-        <Button
-          onClick={onClickCopyMermaidCode}
-          disabled={isStale || isMermaidCodeEmpty}
+          {/* TODO: Downloaded diagram always matches website's theme. Consider always downloading the "light" one. */}
+          <Button
+            onClick={onClickDownloadSvg}
+            disabled={isStale || isMermaidCodeEmpty}
+          >
+            Download SVG
+          </Button>
+        </OverlayTrigger>
+        <OverlayTrigger
+          delay={{ show: 1000, hide: 500 }}
+          overlay={<Tooltip>Copy Mermaid code to your clipboard</Tooltip>}
         >
-          Copy Mermaid
-        </Button>
+          <Button
+            onClick={onClickCopyMermaidCode}
+            disabled={isStale || isMermaidCodeEmpty}
+          >
+            <i className="bi bi-copy me-2"></i>
+            <span>Copy Mermaid</span>
+          </Button>
+        </OverlayTrigger>
       </div>
     </>
   );

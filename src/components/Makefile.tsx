@@ -70,7 +70,10 @@ const Makefile = ({
     <>
       <div className={"d-flex justify-content-between"}>
         <h2>Makefile</h2>
-        <OverlayTrigger overlay={<Tooltip>Undo latest changes</Tooltip>}>
+        <OverlayTrigger
+          delay={{ show: 1000, hide: 500 }}
+          overlay={<Tooltip>Undo latest changes to the Makefile</Tooltip>}
+        >
           <Button
             onClick={restoreSubmittedVal}
             disabled={!isSubmittedValStale}
