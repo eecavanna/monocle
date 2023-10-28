@@ -25,6 +25,10 @@ const Makefile = ({
     useState<string>(initialValue);
 
   // Keep track of whether the current editor value differs from the most recently-submitted editor value.
+  //
+  // Note: We maintain this variable because we want to detect when the staleness _changes_; not just whether
+  //       the editor is currently stale or not stale. In order to detect change, we need information about the past.
+  //
   const [isSubmittedValStale, setIsSubmittedValStale] =
     useState<boolean>(false);
 
