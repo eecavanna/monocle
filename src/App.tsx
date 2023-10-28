@@ -1,18 +1,25 @@
-import { useLayoutEffect, useState } from "react";
-import { generateDiagramCodeFromMakefile } from "./lib/helpers.ts";
+import { useEffect, useLayoutEffect, useState } from "react";
+import {
+  fetchMakefileContentsFromUrl,
+  generateDiagramCodeFromMakefile,
+  readMakefileUrlFromQueryStr,
+} from "./lib/helpers.ts";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.min.css";
 import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
+import Placeholder from "react-bootstrap/Placeholder";
 import Makefile from "./components/Makefile.tsx";
 import Diagram from "./components/Diagram.tsx";
 import { Theme } from "./constants.ts";
 import { getInitialTheme, saveTheme } from "./lib/theme.ts";
 import { ThemeSelector } from "./components/ThemeSelector.tsx";
+import FormPlaceholder from "./components/FormPlaceholder.tsx";
 
 function App() {
-  const initialEditorValue =
-    "# Paste or drop your Makefile here\n\ntarget: dep1 dep2\ndep1: dep3\n";
+  const [initialEditorValue, setInitialEditorValue] = useState<string>(
+    "# Paste or drop your Makefile here\n\ntarget: dep1 dep2\ndep1: dep3\n",
+  );
 
   // This keeps track of whether the current editor value differs from the last-submitted editor value.
   const [isDiagramStale, setIsDiagramStale] = useState<boolean>(false);
@@ -40,6 +47,31 @@ function App() {
     saveTheme(theme);
   }, [theme]);
 
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  // Whenever the component loads (effectively, whenever the page loads), process the query string.
+  useEffect(() => {
+    processQueryStr(); // we ignore the returned promise
+  }, []);
+
+  const processQueryStr = async () => {
+    const url = readMakefileUrlFromQueryStr(window.location.search);
+    if (typeof url === "string") {
+      const fetchedMakefileContents = await fetchMakefileContentsFromUrl(url);
+      if (typeof fetchedMakefileContents === "string") {
+        setInitialEditorValue(fetchedMakefileContents);
+        const c = generateDiagramCodeFromMakefile(fetchedMakefileContents);
+        setDiagramCode(c);
+      } else {
+        console.warn(`No content was available at the specified URL.`);
+      }
+
+      setIsLoading(false);
+    } else {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <>
       <Navbar className={"bg-body-tertiary"} data-bs-theme={theme}>
@@ -51,19 +83,28 @@ function App() {
         </Container>
       </Navbar>
       <Container>
-        <h2 className={"mt-5"}>Makefile</h2>
-        <Makefile
-          theme={theme}
-          initialValue={initialEditorValue}
-          onChangeStaleness={setIsDiagramStale}
-          onSubmit={onSubmitMakefile}
-        />
-        <h2 className={"mt-5"}>Diagram</h2>
-        <Diagram
-          isStale={isDiagramStale}
-          mermaidCode={diagramCode}
-          theme={theme}
-        />
+        {isLoading ? (
+          <Placeholder as={"div"} animation={"wave"}>
+            <FormPlaceholder />
+            <FormPlaceholder />
+          </Placeholder>
+        ) : (
+          <>
+            <h2 className={"mt-5"}>Makefile</h2>
+            <Makefile
+              theme={theme}
+              initialValue={initialEditorValue}
+              onChangeStaleness={setIsDiagramStale}
+              onSubmit={onSubmitMakefile}
+            />
+            <h2 className={"mt-5"}>Diagram</h2>
+            <Diagram
+              isStale={isDiagramStale}
+              mermaidCode={diagramCode}
+              theme={theme}
+            />
+          </>
+        )}
       </Container>
     </>
   );

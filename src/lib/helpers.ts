@@ -28,23 +28,23 @@ export const normalizeGitHubUrl = (url: string) => {
 };
 
 /**
- * Fetches the file at the specified URL and returns its contents, interpreted as text.
+ * Fetches the file at the specified URL and returns a Promise that resolves to either
+ * the file's contents interpreted as text, or undefined.
  *
- * @param makefileUrl
+ * @param makefileUrl {string} The URL of the file
  */
 export const fetchMakefileContentsFromUrl = async (makefileUrl: string) => {
-  let text = "";
+  let text;
 
   try {
     const response = await fetch(makefileUrl);
     if (response.ok) {
       text = await response.text();
     } else {
-      alert(`Failed to fetch Makefile from: ${makefileUrl}`);
+      console.error(`Failed to fetch Makefile from: ${makefileUrl}`);
     }
   } catch (error) {
-    console.error(error);
-    alert(`Failed to fetch Makefile from: ${makefileUrl}`);
+    console.error(`Failed to fetch Makefile from: ${makefileUrl}`, error);
   }
 
   return text;
