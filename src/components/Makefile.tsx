@@ -94,7 +94,8 @@ const Makefile = ({
         <style type={"text/css"}>
           {`
             /* Give the editor rounded corners. */
-            .cm-editor { 
+            .cm-editor,
+            .cm-scroller {
               border-radius: var(--bs-border-radius);
             }
             .cm-gutters {
@@ -103,7 +104,7 @@ const Makefile = ({
             }
             
             /* Match the gutter border color to the editor border color. */
-            .cm-theme-light .cm-gutters {                           
+            .cm-theme-light .cm-gutters {
               border-right-color: var(--bs-border-color);
             }
           `}
