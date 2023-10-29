@@ -108,7 +108,7 @@ function App() {
           <ThemeSelector theme={theme} onSelect={setTheme} />
         </Container>
       </Navbar>
-      <Container className={"pt-5 pb-5"}>
+      <Container className={"py-4 py-sm-5"}>
         {isLoading ? (
           <div className={"d-flex justify-content-center"}>
             <Spinner animation={"grow"} role={"status"}>
@@ -117,7 +117,7 @@ function App() {
           </div>
         ) : (
           <>
-            <div className={"mb-5"}>
+            <div className={"mb-4 mb-sm-5"}>
               <Makefile
                 theme={theme}
                 initialValue={initialEditorValue}
