@@ -72,15 +72,21 @@ const Makefile = ({
         <h2>Makefile</h2>
         <OverlayTrigger
           delay={{ show: 1000, hide: 500 }}
-          overlay={<Tooltip>Undo latest changes to the Makefile</Tooltip>}
+          overlay={<Tooltip>Undo the latest changes to the Makefile</Tooltip>}
         >
           <Button
+            size={"sm"}
             onClick={restoreSubmittedVal}
             disabled={!isSubmittedValStale}
-            className={isSubmittedValStale ? "text-muted" : "text-secondary"} // increases contrast between the two states
+            className={
+              isSubmittedValStale
+                ? "text-decoration-none text-muted"
+                : "text-decoration-none text-secondary"
+            } // increases contrast between the two states
             variant={"link"}
           >
-            <i className={`bi bi-arrow-counterclockwise me-1`}></i>
+            <i className={`bi bi-arrow-counterclockwise me-2`}></i>
+            <span>Revert</span>
           </Button>
         </OverlayTrigger>
       </div>
@@ -119,7 +125,8 @@ const Makefile = ({
           disabled={!isSubmittedValStale}
           className={isSubmittedValStale ? "shadow-sm" : "shadow-none"}
         >
-          Update diagram
+          <i className="bi bi-check-circle me-2"></i>
+          <span>Update diagram</span>
         </Button>
       </div>
     </>
