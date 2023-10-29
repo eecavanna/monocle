@@ -108,14 +108,14 @@ function App() {
           <ThemeSelector theme={theme} onSelect={setTheme} />
         </Container>
       </Navbar>
-      <Container>
+      <Container className={"pt-5 pb-5"}>
         {isLoading ? (
           <Spinner animation={"grow"} role={"status"}>
             <span className={"visually-hidden"}>Loading...</span>
           </Spinner>
         ) : (
           <>
-            <div className={"mt-5"}>
+            <div className={"mb-5"}>
               <Makefile
                 theme={theme}
                 initialValue={initialEditorValue}
@@ -123,7 +123,7 @@ function App() {
                 onSubmit={syncMermaidCodeWithMakefileContent}
               />
             </div>
-            <div className={"mt-5"}>
+            <div>
               <Diagram
                 isStale={isEdited}
                 mermaidCode={mermaidCode}
