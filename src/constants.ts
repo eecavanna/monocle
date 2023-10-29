@@ -6,6 +6,12 @@ export enum Theme {
 
 export enum BrowserStorageKey {
   THEME = "theme",
+  HAS_DISMISSED_WELCOME_MESSAGE = "has-dismissed-welcome-message",
+}
+
+export enum BrowserStorageValue {
+  TRUE = "true",
+  FALSE = "false",
 }
 
 export enum QueryParamKey {

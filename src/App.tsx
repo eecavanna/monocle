@@ -10,10 +10,12 @@ import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
 import Spinner from "react-bootstrap/Spinner";
 import ToastContainer from "react-bootstrap/ToastContainer";
+import Alert from "react-bootstrap/Alert";
+import Button from "react-bootstrap/Button";
 import Makefile from "./components/Makefile.tsx";
 import Diagram from "./components/Diagram.tsx";
 import CustomToast from "./components/CustomToast.tsx";
-import { Theme } from "./constants.ts";
+import { BrowserStorageValue, BrowserStorageKey, Theme } from "./constants.ts";
 import { getInitialTheme, saveTheme } from "./lib/theme.ts";
 import { ThemeSelector } from "./components/ThemeSelector.tsx";
 
@@ -26,6 +28,20 @@ function App() {
 
   const [isLoadToastVisible, setIsLoadToastVisible] = useState<boolean>(false);
   const hideLoadToast = () => setIsLoadToastVisible(false);
+
+  const [isWelcomeMessageVisible, setIsWelcomeMessageVisible] =
+    useState<boolean>(
+      localStorage.getItem(BrowserStorageKey.HAS_DISMISSED_WELCOME_MESSAGE) !==
+        BrowserStorageValue.TRUE,
+    );
+  const showWelcomeMessage = () => setIsWelcomeMessageVisible(true);
+  const onDismissWelcomeMessage = () => {
+    localStorage.setItem(
+      BrowserStorageKey.HAS_DISMISSED_WELCOME_MESSAGE,
+      BrowserStorageValue.TRUE,
+    );
+    setIsWelcomeMessageVisible(false);
+  };
 
   const [initialEditorValue, setInitialEditorValue] = useState<string>(
     "# Paste or drop your Makefile here\n\ntarget: dep1 dep2\ndep1: dep3\n",
@@ -105,10 +121,41 @@ function App() {
           <Navbar.Brand className={"d-flex align-items-center"}>
             <span>Monocle</span>
           </Navbar.Brand>
-          <ThemeSelector theme={theme} onSelect={setTheme} />
+          <span>
+            <ThemeSelector theme={theme} onSelect={setTheme} />
+            <Button
+              variant={"link"}
+              className={"text-muted"}
+              onClick={showWelcomeMessage}
+              title={"Show welcome message"}
+              disabled={isWelcomeMessageVisible}
+            >
+              <i className="bi bi-question-circle-fill"></i>
+            </Button>
+          </span>
         </Container>
       </Navbar>
       <Container className={"py-4 py-sm-5"}>
+        <Alert
+          variant={"info"}
+          show={isWelcomeMessageVisible}
+          onClose={onDismissWelcomeMessage}
+          dismissible
+          className={"mb-4 mb-sm-5"}
+        >
+          <Alert.Heading>Welcome to Monocle</Alert.Heading>
+          <p>
+            Monocle is a Makefile visualizer for the web. You can use it to
+            generate a diagram of a Makefile's targets and their dependencies.
+          </p>
+          <hr />
+          <p>
+            To get started, you can drop a Makefile into the editor below. When
+            you press the "Update diagram" button, Monocle will generate a
+            diagram of the Makefile's targets and their dependencies.
+          </p>
+        </Alert>
+
         {isLoading ? (
           <div className={"d-flex justify-content-center"}>
             <Spinner animation={"grow"} role={"status"}>
