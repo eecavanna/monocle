@@ -1,4 +1,8 @@
-// Note: Both "light" and "dark" happen to be valid theme identifiers for Bootstrap, Codemirror, and Mermaid.
+// Note: Both "light" and "dark" happen to be valid theme identifiers for Bootstrap and Codemirror.
+//
+//       For Mermaid, "dark" is a valid theme identifier; and, with "light", Mermaid falls back to its default theme.
+//       Reference: https://mermaid.js.org/config/theming.html#available-themes
+//
 export enum Theme {
   Dark = "dark",
   Light = "light",

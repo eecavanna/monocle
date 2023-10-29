@@ -148,7 +148,7 @@ export const generateMermaidCodeFromMakefile = (
   // constitute Mermaid code for a graph.
   const mermaidCodeLines: Array<string> = [];
 
-  // Get the nodes that represent Make targets.
+  // Generate Mermaid code for the nodes that represent Make targets and their dependencies.
   nodes
     // Filter out nodes that describe Make variables instead of Make targets.
     //
@@ -163,7 +163,7 @@ export const generateMermaidCodeFromMakefile = (
     // Generate Mermaid code describing the remaining nodes.
     .forEach((node) => {
       const { target, deps } = node;
-      mermaidCodeLines.push(`  ${target}`);
+      mermaidCodeLines.push(`  ${target}:::target`); // in Mermaid syntax, `:::` precedes a class identifier
       deps?.forEach((dep) => {
         mermaidCodeLines.push(`    ${target} --> ${dep}`);
       });
@@ -177,6 +177,9 @@ export const generateMermaidCodeFromMakefile = (
     mermaidCode = [
       `%% Mermaid diagram`, // "%%" precedes a comment
       `graph ${direction}`, // "graph" is an alias for "flowchart"
+      // Note: These commented-out lines are an example of how we might style targets vs. non-targets differently.
+      // `  classDef default opacity: 75%`, // applies to all nodes
+      // `  classDef target opacity: 100%`, // applies to nodes having the `target` class
       ...mermaidCodeLines,
     ].join("\n");
   }
