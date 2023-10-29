@@ -91,7 +91,23 @@ const Makefile = ({
         </OverlayTrigger>
       </div>
       <div className={"mb-3"}>
-        {/* TODO: Give the editor a border-radius to match the nearby Bootstrap elements. */}
+        <style type={"text/css"}>
+          {`
+            /* Give the editor rounded corners. */
+            .cm-editor { 
+              border-radius: var(--bs-border-radius);
+            }
+            .cm-gutters {
+              border-top-left-radius: var(--bs-border-radius);
+              border-bottom-left-radius: var(--bs-border-radius);
+            }
+            
+            /* Match the gutter border color to the editor border color. */
+            .cm-theme-light .cm-gutters {                           
+              border-right-color: var(--bs-border-color);
+            }
+          `}
+        </style>
         <CodeMirror
           autoFocus
           indentWithTab={false} // allow user to "tab" around the web page, not indent within the editor
@@ -110,6 +126,7 @@ const Makefile = ({
           onDrop={onDrop} // empties the editor before dropping content
           onDragEnter={onDragEnter}
           onDragLeave={onDragLeave}
+          className={"border rounded"}
           // TODO: Re-introduce drag-and-drop styling once I figure out the following flickering issue:
           //       Dragging over populated lines or leaving the gutter, causes onDragLeave to fire, resulting in
           //       isDragging toggling. When styles depend on isDragging, that can result in those styles flickering.

@@ -87,6 +87,7 @@ const Diagram = ({
       <h2>Diagram</h2>
       <div
         ref={diagramWrapperRef}
+        className={"border rounded"}
         style={{
           filter: isStale ? "blur(4px)" : undefined,
           backgroundColor,
