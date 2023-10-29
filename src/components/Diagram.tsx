@@ -92,6 +92,7 @@ const Diagram = ({
             </Button>
           </OverlayTrigger>
           <Dropdown.Toggle
+            title={"Show menu"}
             disabled={!isMermaidCodeUsable}
             style={{ marginLeft: 0 }} // eliminates vertical separation line
           />
