@@ -110,9 +110,11 @@ function App() {
       </Navbar>
       <Container className={"pt-5 pb-5"}>
         {isLoading ? (
-          <Spinner animation={"grow"} role={"status"}>
-            <span className={"visually-hidden"}>Loading...</span>
-          </Spinner>
+          <div className={"d-flex justify-content-center"}>
+            <Spinner animation={"grow"} role={"status"}>
+              <span className={"visually-hidden"}>Loading...</span>
+            </Spinner>
+          </div>
         ) : (
           <>
             <div className={"mb-5"}>
