@@ -32,7 +32,10 @@ const Diagram = ({
       const svgEl = svgEls[0]; // get the first one
       const svgCode = svgEl.outerHTML;
 
-      const file = new File([svgCode], "diagram.svg", {
+      // TODO: Downloaded diagram always matches website's theme. Consider always downloading the "light" one.
+      const suggestedFilename = theme === Theme.Dark ? "diagram-dark.svg" : "diagram.svg";
+
+      const file = new File([svgCode], suggestedFilename, {
         type: MIMEType.SVG + ";charset=utf-8",
       });
       saveAs(file);
@@ -82,7 +85,6 @@ const Diagram = ({
             delay={{ show: 1000, hide: 500 }}
             overlay={<Tooltip>Download the diagram in SVG format</Tooltip>}
           >
-            {/* TODO: Downloaded diagram always matches website's theme. Consider always downloading the "light" one. */}
             <Button
               onClick={onClickDownloadSvg}
               disabled={!isMermaidCodeUsable}
