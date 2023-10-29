@@ -41,13 +41,16 @@ const Diagram = ({
         type: MIMEType.SVG + ";charset=utf-8",
       });
 
-      // If it's an iOS device, use the Web Share API; otherwise, download the file.
-      if (is_iOS && typeof navigator.share === "function") {
+      // If it's an iOS device and can share the file via the Web Share API, do that; otherwise, download the file.
+      const dataToShare = { files: [file] };
+      if (
+        is_iOS &&
+        typeof navigator.share === "function" &&
+        typeof navigator.canShare === "function" &&
+        navigator.canShare(dataToShare)
+      ) {
         navigator
-          .share({
-            title: suggestedFilename,
-            files: [file],
-          })
+          .share(dataToShare)
           .then(() => {
             console.log("Shared successfully.");
           })
