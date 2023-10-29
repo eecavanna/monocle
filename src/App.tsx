@@ -105,9 +105,7 @@ function App() {
           <Navbar.Brand className={"d-flex align-items-center"}>
             <span>Monocle</span>
           </Navbar.Brand>
-          <Navbar.Text>
-            <ThemeSelector theme={theme} onSelect={setTheme} />
-          </Navbar.Text>
+          <ThemeSelector theme={theme} onSelect={setTheme} />
         </Container>
       </Navbar>
       <Container>

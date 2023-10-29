@@ -1,4 +1,5 @@
 import { Theme } from "../constants.ts";
+import Button from "react-bootstrap/Button";
 
 interface Props {
   theme: Theme;
@@ -18,9 +19,13 @@ export const ThemeSelector = ({ onSelect, theme }: Props) => {
     theme === Theme.Dark ? "bi-moon-stars-fill" : "bi bi-sun-fill";
 
   return (
-    // TODO: Use a `button` for this, so I don't have to specify an `href`.
-    <a className={"icon-link"} onClick={onClick} href={"#"}>
+    <Button
+      variant={"link"}
+      className={"text-muted"}
+      onClick={onClick}
+      title={"Toggle theme"}
+    >
       <i className={`bi ${iconClassName}`}></i>
-    </a>
+    </Button>
   );
 };
