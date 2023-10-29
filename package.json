@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages --dist dist --remote origin --branch gh-pages --message \"Deploy v$npm_package_version\"",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "postinstall": "patch-package",
     "prettier": "prettier src/*.ts src/*.tsx src/**/*.ts src/**/*.tsx --write",
@@ -34,6 +36,7 @@
     "eslint": "^8.45.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
+    "gh-pages": "^6.0.0",
     "patch-package": "^8.0.0",
     "prettier": "3.0.3",
     "typescript": "^5.0.2",
