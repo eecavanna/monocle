@@ -8,6 +8,7 @@ import Tooltip from "react-bootstrap/Tooltip";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Dropdown from "react-bootstrap/Dropdown";
+import is_iOS from "is-ios";
 
 interface Props {
   theme?: Theme;
@@ -33,12 +34,29 @@ const Diagram = ({
       const svgCode = svgEl.outerHTML;
 
       // TODO: Downloaded diagram always matches website's theme. Consider always downloading the "light" one.
-      const suggestedFilename = theme === Theme.Dark ? "diagram-dark.svg" : "diagram.svg";
+      const suggestedFilename =
+        theme === Theme.Dark ? "diagram-dark.svg" : "diagram.svg";
 
       const file = new File([svgCode], suggestedFilename, {
         type: MIMEType.SVG + ";charset=utf-8",
       });
-      saveAs(file);
+
+      // If it's an iOS device, use the Web Share API; otherwise, download the file.
+      if (is_iOS && typeof navigator.share === "function") {
+        navigator
+          .share({
+            title: suggestedFilename,
+            files: [file],
+          })
+          .then(() => {
+            console.log("Shared successfully.");
+          })
+          .catch((error) => {
+            console.error("Failed to share SVG file.", error);
+          });
+      } else {
+        saveAs(file);
+      }
     }
   };
 

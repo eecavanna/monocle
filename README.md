@@ -24,6 +24,7 @@ Monocle is built upon the following technologies:
 - Mermaid (via [`mdx-mermaid`](https://sjwall.github.io/mdx-mermaid/) and [`patch-package`](https://github.com/ds300/patch-package))
 - [`copy-to-clipboard`](https://www.npmjs.com/package/copy-to-clipboard) for copying text to the clipboard
 - [`file-saver`](https://www.npmjs.com/package/file-saver) for downloading files
+- [`is-ios`](https://github.com/bendrucker/is-ios) for detecting iOS devices
 - [Vitest](https://vitest.dev/) for testing
 - [Prettier](https://prettier.io/) 3 for code formatting
 - [`patch-package`](https://www.npmjs.com/package/patch-package) for patching NPM packages
