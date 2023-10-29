@@ -109,11 +109,11 @@ describe(generateMermaidCodeFromMakefile.name, () => {
     const mermaidCode = [
       "%% Mermaid diagram",
       "graph LR",
-      "  a", // target
+      "  a:::target",
       "    a --> b",
       "    a --> c",
       "    a --> d",
-      "  b", // target
+      "  b:::target",
       "    b --> c",
     ].join("\n");
 
