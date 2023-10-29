@@ -102,18 +102,10 @@ const Diagram = ({
       </div>
       <div className={"mt-3 d-flex justify-content-between"}>
         <Dropdown as={ButtonGroup} drop={"down"} align={"end"}>
-          <OverlayTrigger
-            delay={{ show: 1000, hide: 500 }}
-            overlay={<Tooltip>Download the diagram in SVG format</Tooltip>}
-          >
-            <Button
-              onClick={onClickDownloadSvg}
-              disabled={!isMermaidCodeUsable}
-            >
-              <i className="bi bi-arrow-down-circle me-2"></i>
-              <span>Download SVG</span>
-            </Button>
-          </OverlayTrigger>
+          <Button onClick={onClickDownloadSvg} disabled={!isMermaidCodeUsable}>
+            <i className="bi bi-arrow-down-circle me-2"></i>
+            <span>Download SVG</span>
+          </Button>
           <Dropdown.Toggle
             title={"Show menu"}
             disabled={!isMermaidCodeUsable}
