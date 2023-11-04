@@ -108,14 +108,14 @@ describe(generateMermaidCodeFromMakefile.name, () => {
     ].join("\n");
 
     const mermaidCode = [
-      "%% Mermaid diagram",
-      "graph LR",
-      "  a:::target",
-      "    a --> b",
-      "    a --> c",
-      "    a --> d",
-      "  b:::target",
-      "    b --> c",
+      `%% Mermaid diagram`,
+      `graph LR`,
+      `  node_0["a"]:::target`,
+      `    node_0["a"] --> node_1["b"]`,
+      `    node_0["a"] --> node_2["c"]`,
+      `    node_0["a"] --> node_3["d"]`,
+      `  node_1["b"]:::target`,
+      `    node_1["b"] --> node_2["c"]`,
     ].join("\n");
 
     expect(generateMermaidCodeFromMakefile(makefileContent)).toBe(mermaidCode);
@@ -123,25 +123,34 @@ describe(generateMermaidCodeFromMakefile.name, () => {
 });
 
 describe(registerMermaidNodeId.name, () => {
-  it("registers safe Mermaid flowchart node ID", () => {
-    // test: adds entry to registry
-    expect(registerMermaidNodeId({}, "a")).toStrictEqual({ a: "a" });
-    // test: adds entry to registry (even if raw ID is unsafe)
-    expect(registerMermaidNodeId({}, "@")).toStrictEqual({ "@": "node_0" });
-    // test: uses existing registry entry
-    expect(registerMermaidNodeId({ a: "b" }, "a")).toStrictEqual({ a: "b" });
-    // test: uses existing registry entry (even if raw ID is unsafe)
-    expect(registerMermaidNodeId({ "@": "node_0" }, "@")).toStrictEqual({
-      "@": "node_0",
+  it("registers unregistered keys", () => {
+    expect(registerMermaidNodeId({}, "a")).toStrictEqual({ a: "node_0" });
+    expect(registerMermaidNodeId({}, "@!$")).toStrictEqual({ "@!$": "node_0" });
+  });
+
+  it("does not re-register already-registered keys", () => {
+    expect(registerMermaidNodeId({ a: "node_0" }, "a")).toStrictEqual({
+      a: "node_0",
     });
-    // test: increments node ID to ensure uniqueness
-    expect(registerMermaidNodeId({ "@": "node_0" }, "$")).toStrictEqual({
-      "@": "node_0",
-      $: "node_1",
+  });
+
+  it("increments the values of additional registered keys", () => {
+    const registry = {};
+    expect(registerMermaidNodeId(registry, "a")).toStrictEqual({ a: "node_0" });
+    expect(registerMermaidNodeId(registry, "b")).toStrictEqual({
+      a: "node_0",
+      b: "node_1",
     });
-    // test: increments node ID to ensure uniqueness (even if raw ID matches a registry key)
-    expect(registerMermaidNodeId({ "@": "node_0" }, "node_0")).toStrictEqual({
-      "@": "node_0",
+    expect(registerMermaidNodeId(registry, "c")).toStrictEqual({
+      a: "node_0",
+      b: "node_1",
+      c: "node_2",
+    });
+  });
+
+  it("treats keys resembling values, like any other keys", () => {
+    expect(registerMermaidNodeId({ a: "node_0" }, "node_0")).toStrictEqual({
+      a: "node_0",
       node_0: "node_1",
     });
   });

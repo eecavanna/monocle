@@ -80,47 +80,42 @@ export const readMakefileUrlFromQueryStr = (
   return validUrl;
 };
 
-type RawId = string;
-type SafeId = string;
-type Registry = { [rawId: string]: SafeId };
+type Registry = { [key: string]: string };
 
 /**
- * Registers a safe, unique Mermaid flowchart node ID based upon the raw ID passed in; and returns the updated registry.
+ * Registers a unique, valid Mermaid flowchart node ID for the string passed in; and returns the updated registry.
+ *
+ * For example, if the string passed in is "foo!", this function would add a key "foo!" to the registry
+ * and (assuming it is the first key being registered) set its value to "node_0".
+ * Registry readers would then know that "foo!" and "node_0" are synonymous.
+ *
+ * If someone were to then try to register "foo!" again, the registry would not change.
+ *
+ * Finally, the things people register become registry keys, not registry values. So, if someone were to happen
+ * to try to register the string "node_0", this function would add a key "node_0" to the registry
+ * and (assuming it is the second key being registered) set its value to "node_1".
  *
  * Reference: https://mermaid.js.org/syntax/flowchart.html
  *
- * TODO: Consider simplifying this to just always register the value as "node_*", even if the raw ID is safe.
- *       Mermaid code can be difficult to visually parse when there's a mixture of node ID styles.
- *
  * @param registry
- * @param rawId
+ * @param key
  */
 export const registerMermaidNodeId = (
   registry: Registry,
-  rawId: RawId,
+  key: string,
 ): Registry => {
-  const safeIdPattern = /^[A-Za-z][A-Za-z0-9_-]*$/; // conservative "guesstimate" of a valid ID
-
   // Helper functions used to make the if/else conditions easier to read.
   const isRegisteredKey = (s: string) => Object.keys(registry).includes(s);
   const isRegisteredValue = (s: string) => Object.values(registry).includes(s);
 
-  // If the raw ID already has an entry in the registry, return the registry as is.
-  if (isRegisteredKey(rawId)) {
-    // Leave the registry as it is.
-  } else {
-    // If the raw ID happens to be a safe ID and doesn't match an existing value in the registry,
-    // register the raw ID and map it to its current value.
-    if (safeIdPattern.test(rawId) && !isRegisteredValue(rawId)) {
-      registry[rawId] = rawId;
-    } else {
-      // Generate a unique safe ID for this raw value; and register it.
-      // eslint-disable-next-line no-constant-condition
-      for (let i = 0; true; i++) {
-        if (!isRegisteredValue(`node_${i}`)) {
-          registry[rawId] = `node_${i}`; // key is the raw ID, value is the unique safe ID
-          break;
-        }
+  // If the string is not registered yet, register it with a unique value.
+  if (!isRegisteredKey(key)) {
+    // eslint-disable-next-line no-constant-condition
+    for (let i = 0; true; i++) {
+      const value = `node_${i}`;
+      if (!isRegisteredValue(value)) {
+        registry[key] = value;
+        break;
       }
     }
   }
@@ -215,14 +210,11 @@ export const generateMermaidCodeFromMakefile = (
     .forEach((node) => {
       const { target, deps } = node;
       registry = registerMermaidNodeId(registry, target);
-      const targetNodeId = registry[target];
-      mermaidCodeLines.push(`  ${targetNodeId}["${target}"]:::target`); // in Mermaid syntax, `:::` precedes a class identifier
+      mermaidCodeLines.push(`  ${registry[target]}["${target}"]:::target`); // in Mermaid syntax, `:::` precedes a class identifier
       deps?.forEach((dep) => {
         registry = registerMermaidNodeId(registry, dep);
-        const depNodeId = registry[dep];
-        mermaidCodeLines.push(
-          `    ${targetNodeId}["${target}"] --> ${depNodeId}["${dep}"]`,
-        );
+        const line = `    ${registry[target]}["${target}"] --> ${registry[dep]}["${dep}"]`;
+        mermaidCodeLines.push(line);
       });
     });
 
