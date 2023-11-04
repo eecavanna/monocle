@@ -3,6 +3,7 @@ import {
   generateMermaidCodeFromMakefile,
   normalizeGitHubUrl,
   readMakefileUrlFromQueryStr,
+  registerMermaidNodeId,
 } from "./helpers.ts";
 
 describe(normalizeGitHubUrl.name, () => {
@@ -118,5 +119,30 @@ describe(generateMermaidCodeFromMakefile.name, () => {
     ].join("\n");
 
     expect(generateMermaidCodeFromMakefile(makefileContent)).toBe(mermaidCode);
+  });
+});
+
+describe(registerMermaidNodeId.name, () => {
+  it("registers safe Mermaid flowchart node ID", () => {
+    // test: adds entry to registry
+    expect(registerMermaidNodeId({}, "a")).toStrictEqual({ a: "a" });
+    // test: adds entry to registry (even if raw ID is unsafe)
+    expect(registerMermaidNodeId({}, "@")).toStrictEqual({ "@": "node_0" });
+    // test: uses existing registry entry
+    expect(registerMermaidNodeId({ a: "b" }, "a")).toStrictEqual({ a: "b" });
+    // test: uses existing registry entry (even if raw ID is unsafe)
+    expect(registerMermaidNodeId({ "@": "node_0" }, "@")).toStrictEqual({
+      "@": "node_0",
+    });
+    // test: increments node ID to ensure uniqueness
+    expect(registerMermaidNodeId({ "@": "node_0" }, "$")).toStrictEqual({
+      "@": "node_0",
+      $: "node_1",
+    });
+    // test: increments node ID to ensure uniqueness (even if raw ID matches a registry key)
+    expect(registerMermaidNodeId({ "@": "node_0" }, "node_0")).toStrictEqual({
+      "@": "node_0",
+      node_0: "node_1",
+    });
   });
 });

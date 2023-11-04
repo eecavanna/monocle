@@ -80,6 +80,54 @@ export const readMakefileUrlFromQueryStr = (
   return validUrl;
 };
 
+type RawId = string;
+type SafeId = string;
+type Registry = { [rawId: string]: SafeId };
+
+/**
+ * Registers a safe, unique Mermaid flowchart node ID based upon the raw ID passed in; and returns the updated registry.
+ *
+ * Reference: https://mermaid.js.org/syntax/flowchart.html
+ *
+ * TODO: Consider simplifying this to just always register the value as "node_*", even if the raw ID is safe.
+ *       Mermaid code can be difficult to visually parse when there's a mixture of node ID styles.
+ *
+ * @param registry
+ * @param rawId
+ */
+export const registerMermaidNodeId = (
+  registry: Registry,
+  rawId: RawId,
+): Registry => {
+  const safeIdPattern = /^[A-Za-z][A-Za-z0-9_-]*$/; // conservative "guesstimate" of a valid ID
+
+  // Helper functions used to make the if/else conditions easier to read.
+  const isRegisteredKey = (s: string) => Object.keys(registry).includes(s);
+  const isRegisteredValue = (s: string) => Object.values(registry).includes(s);
+
+  // If the raw ID already has an entry in the registry, return the registry as is.
+  if (isRegisteredKey(rawId)) {
+    // Leave the registry as it is.
+  } else {
+    // If the raw ID happens to be a safe ID and doesn't match an existing value in the registry,
+    // register the raw ID and map it to its current value.
+    if (safeIdPattern.test(rawId) && !isRegisteredValue(rawId)) {
+      registry[rawId] = rawId;
+    } else {
+      // Generate a unique safe ID for this raw value; and register it.
+      // eslint-disable-next-line no-constant-condition
+      for (let i = 0; true; i++) {
+        if (!isRegisteredValue(`node_${i}`)) {
+          registry[rawId] = `node_${i}`; // key is the raw ID, value is the unique safe ID
+          break;
+        }
+      }
+    }
+  }
+
+  return registry;
+};
+
 /**
  * Removes comments from a deps list.
  *
@@ -148,6 +196,9 @@ export const generateMermaidCodeFromMakefile = (
   // constitute Mermaid code for a graph.
   const mermaidCodeLines: Array<string> = [];
 
+  // Maintain a registry of Mermaid flowchart node IDs, to prevent post-sanitization naming collisions.
+  let registry: Registry = {};
+
   // Generate Mermaid code for the nodes that represent Make targets and their dependencies.
   nodes
     // Filter out nodes that describe Make variables instead of Make targets.
@@ -163,9 +214,15 @@ export const generateMermaidCodeFromMakefile = (
     // Generate Mermaid code describing the remaining nodes.
     .forEach((node) => {
       const { target, deps } = node;
-      mermaidCodeLines.push(`  ${target}:::target`); // in Mermaid syntax, `:::` precedes a class identifier
+      registry = registerMermaidNodeId(registry, target);
+      const targetNodeId = registry[target];
+      mermaidCodeLines.push(`  ${targetNodeId}["${target}"]:::target`); // in Mermaid syntax, `:::` precedes a class identifier
       deps?.forEach((dep) => {
-        mermaidCodeLines.push(`    ${target} --> ${dep}`);
+        registry = registerMermaidNodeId(registry, dep);
+        const depNodeId = registry[dep];
+        mermaidCodeLines.push(
+          `    ${targetNodeId}["${target}"] --> ${depNodeId}["${dep}"]`,
+        );
       });
     });
 
