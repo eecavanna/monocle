@@ -83,27 +83,25 @@ export const readMakefileUrlFromQueryStr = (
 type Registry = { [key: string]: string };
 
 /**
- * Registers a unique, valid Mermaid flowchart node ID for the string passed in; and returns the updated registry.
+ * Registers a unique Mermaid flowchart node ID for the string passed in; and returns that node ID and the updated registry.
  *
- * For example, if the string passed in is "foo!", this function would add a key "foo!" to the registry
- * and (assuming it is the first key being registered) set its value to "node_0".
- * Registry readers would then know that "foo!" and "node_0" are synonymous.
- *
+ * For example, if the registry is empty and the string passed in is "foo!", this function would add a key "foo!"
+ * to the registry and set its value to "node_0" (i.e. a unique Mermaid flowchart node ID).
  * If someone were to then try to register "foo!" again, the registry would not change.
  *
- * Finally, the things people register become registry keys, not registry values. So, if someone were to happen
- * to try to register the string "node_0", this function would add a key "node_0" to the registry
- * and (assuming it is the second key being registered) set its value to "node_1".
+ * Note: The strings callers pass in become registry keys, not registry values. For example, if someone were to register
+ * the string "node_0", this function would add a _key_ "node_0" to the registry and (assuming it is the second
+ * key being registered), set its _value_ to "node_1"; then return "node_1" and the updated registry.
  *
  * Reference: https://mermaid.js.org/syntax/flowchart.html
  *
- * @param registry
- * @param key
+ * @param registry {Registry}
+ * @param key {string} The string you want to register as a key
  */
 export const registerMermaidNodeId = (
   registry: Registry,
   key: string,
-): Registry => {
+): [Registry, string] => {
   // Helper functions used to make the if/else conditions easier to read.
   const isRegisteredKey = (s: string) => Object.keys(registry).includes(s);
   const isRegisteredValue = (s: string) => Object.values(registry).includes(s);
@@ -120,7 +118,7 @@ export const registerMermaidNodeId = (
     }
   }
 
-  return registry;
+  return [registry, registry[key]];
 };
 
 /**
@@ -209,11 +207,13 @@ export const generateMermaidCodeFromMakefile = (
     // Generate Mermaid code describing the remaining nodes.
     .forEach((node) => {
       const { target, deps } = node;
-      registry = registerMermaidNodeId(registry, target);
-      mermaidCodeLines.push(`  ${registry[target]}["${target}"]:::target`); // in Mermaid syntax, `:::` precedes a class identifier
+      let targetNodeId: string;
+      [registry, targetNodeId] = registerMermaidNodeId(registry, target);
+      mermaidCodeLines.push(`  ${targetNodeId}["${target}"]:::target`); // in Mermaid syntax, `:::` precedes a class identifier
       deps?.forEach((dep) => {
-        registry = registerMermaidNodeId(registry, dep);
-        const line = `    ${registry[target]}["${target}"] --> ${registry[dep]}["${dep}"]`;
+        let depNodeId: string;
+        [registry, depNodeId] = registerMermaidNodeId(registry, dep);
+        const line = `    ${targetNodeId}["${target}"] --> ${depNodeId}["${dep}"]`;
         mermaidCodeLines.push(line);
       });
     });

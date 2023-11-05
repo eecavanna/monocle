@@ -124,34 +124,53 @@ describe(generateMermaidCodeFromMakefile.name, () => {
 
 describe(registerMermaidNodeId.name, () => {
   it("registers unregistered keys", () => {
-    expect(registerMermaidNodeId({}, "a")).toStrictEqual({ a: "node_0" });
-    expect(registerMermaidNodeId({}, "@!$")).toStrictEqual({ "@!$": "node_0" });
+    expect(registerMermaidNodeId({}, "a")).toStrictEqual([
+      { a: "node_0" },
+      "node_0",
+    ]);
+    expect(registerMermaidNodeId({}, "@!$")).toStrictEqual([
+      { "@!$": "node_0" },
+      "node_0",
+    ]);
   });
 
   it("does not re-register already-registered keys", () => {
-    expect(registerMermaidNodeId({ a: "node_0" }, "a")).toStrictEqual({
-      a: "node_0",
-    });
+    expect(registerMermaidNodeId({ a: "node_0" }, "a")).toStrictEqual([
+      { a: "node_0" },
+      "node_0",
+    ]);
   });
 
   it("increments the values of additional registered keys", () => {
     const registry = {};
-    expect(registerMermaidNodeId(registry, "a")).toStrictEqual({ a: "node_0" });
-    expect(registerMermaidNodeId(registry, "b")).toStrictEqual({
-      a: "node_0",
-      b: "node_1",
-    });
-    expect(registerMermaidNodeId(registry, "c")).toStrictEqual({
-      a: "node_0",
-      b: "node_1",
-      c: "node_2",
-    });
+    expect(registerMermaidNodeId(registry, "a")).toStrictEqual([
+      { a: "node_0" },
+      "node_0",
+    ]);
+    expect(registerMermaidNodeId(registry, "b")).toStrictEqual([
+      {
+        a: "node_0",
+        b: "node_1",
+      },
+      "node_1",
+    ]);
+    expect(registerMermaidNodeId(registry, "c")).toStrictEqual([
+      {
+        a: "node_0",
+        b: "node_1",
+        c: "node_2",
+      },
+      "node_2",
+    ]);
   });
 
   it("treats keys resembling values, like any other keys", () => {
-    expect(registerMermaidNodeId({ a: "node_0" }, "node_0")).toStrictEqual({
-      a: "node_0",
-      node_0: "node_1",
-    });
+    expect(registerMermaidNodeId({ a: "node_0" }, "node_0")).toStrictEqual([
+      {
+        a: "node_0",
+        node_0: "node_1",
+      },
+      "node_1",
+    ]);
   });
 });
